@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Render the self-contained index.html for the MetLife Japan demo.
+"""Render the self-contained index.html for the Japanese life-insurance lapse demo.
 
 Editorial / essay layout: a single readable column, charts as figures inside
 the narrative, consistent type scale, minimal box chrome. Embeds (a) the real,
@@ -61,7 +61,7 @@ d1_lift = MODEL["lift"][0]["lift"]; cap2 = f"{R['capture_top2_deciles']*100:.0f}
 roi_x = R["roi_x"]; net_b = f"¥{R['net_benefit_jpy']/1e9:.2f}B"
 cv_gbm = f"{H['auc_cv_mean']:.3f} ± {H['auc_cv_std']:.3f}"
 cv_log = f"{H['auc_log_cv_mean']:.3f} ± {H['auc_log_cv_std']:.3f}"
-gap_word = "not statistically separable" if not H["gap_significant"] else "a real gap"
+gap_v = f"{H['gbm_gap']:.3f}"; gap_p = f"{H['gbm_gap_p']:.2f}"
 haz0 = f"{MODEL['duration_profile']['hazard'][0]['h']*100:.0f}%"
 be_uplift = f"{R['breakeven_uplift']*100:.0f}%"
 sil5 = next(s["silhouette"] for s in MODEL["silhouette"] if s["k"] == 5)
@@ -74,7 +74,7 @@ HTML = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Predicting and preventing policy lapse · MetLife Japan</title>
+<title>Predicting and preventing policy lapse · Japanese life market</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
@@ -170,19 +170,20 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
   <header>
     <p class="eyebrow">Lapse modelling · a worked case study</p>
     <h1>Predicting and preventing policy lapse in the Japanese life market</h1>
-    <p class="lead">Japan's life-insurance market has <b>stopped growing</b>. Almost nine in ten households are already
-      covered, the population is shrinking, and for an insurer like MetLife Japan the value of the business now sits in
-      <b>the policies it already holds</b> rather than in the few it can still sell. This is a worked example of how I
-      would approach that as a data scientist: <b>rank</b> the in-force book by the chance each policy lapses in the next
-      twelve months, work out <b>what is driving</b> that risk, <b>segment</b> policyholders into groups a retention team
-      can act on, and put a <b>defensible number</b> on what intervening is worth.</p>
-    <p>Everything below was built end to end in Python with scikit-learn, and every chart is a live output of the fitted
-      model, not a mock-up. I have tried to be honest about where the evidence is strong and where it is not.</p>
-    <p class="honesty">One caveat up front. The market figures in the next section are real and sourced. The
-      policyholder-level book is <b>synthetic</b>: {n_ph} policies I generated so the page can show a full, reproducible
-      pipeline without using anyone's data. Its lapse drivers follow the directions reported in the actuarial
-      literature, so the patterns are realistic, but the headline accuracy reflects how well the model recovers a
-      process I designed, not how it would score on MetLife's real book. I flag this again where it matters.</p>
+    <p class="lead">A <b>lapse</b> is when a policyholder stops paying and the policy ends, taking its future premiums
+      and value with it. Japan's life market has <b>stopped growing</b>: nine in ten households already have cover and
+      the population is shrinking, so an insurer's value increasingly comes from <b>keeping the policies it already
+      holds</b> rather than selling new ones. This case study works that problem end to end: score every in-force policy
+      by its chance of lapsing in the next year, explain <b>what is driving</b> that risk, group customers into segments
+      a retention team can act on, and estimate <b>what a save campaign is worth</b>.</p>
+    <p>It was built end to end in Python (scikit-learn), and every chart is a live output of the model, not a mock-up. I
+      have flagged plainly where the evidence is strong and where it is not.</p>
+    <p class="honesty">One caveat up front, because it changes how to read every number below. The market figures are
+      real and cited. The policyholder records are <b>synthetic</b>: {n_ph} policies I generated, since real insurer data
+      is confidential. I built the generator so each lapse driver points the way the actuarial literature says it should,
+      so the patterns are realistic. The trade-off: the model's accuracy reflects how well it recovers a pattern <i>I</i>
+      designed, so on a real book I would expect it to be lower. What carries over is the <b>method and the pipeline</b>,
+      not the headline accuracy.</p>
   </header>
 
   <!-- 1. MARKET ------------------------------------------------------------>
@@ -210,49 +211,51 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
           cover, and makes the existing book disproportionately valuable.</figcaption>
       </figure>
     </div>
-    <p>This is also where MetLife competes. MetLife Insurance K.K. has been in Japan since 1973 (originally as Alico, the
-      first foreign life insurer in the country) and is strong in foreign-currency whole-life and annuity products sold
-      through tied agents and bancassurance. Those are <b>exactly the segments where affordability-driven and
-      rate-driven lapse bites hardest</b>, so a retention model is not an abstract exercise for them. The question
-      becomes concrete: <b>which policies are about to leave, and why?</b></p>
+    <p>The book here is a typical Japanese in-force mix: whole-life, term and annuity policies sold through agents and
+      bancassurance. These are <b>exactly the products where affordability- and rate-driven lapse bites hardest</b>,
+      which is what makes a retention model worth building. The question becomes concrete: <b>which policies are about to
+      leave, and why?</b></p>
   </section>
 
   <!-- 2. MODEL -------------------------------------------------------------->
   <section class="sec">
     <h2><span class="n">2</span>A model for who lapses, and why</h2>
     <p class="sec-meta">Gradient boosting vs a logistic challenger · {n_ph} policyholders</p>
-    <p>I framed lapse as a binary prediction: for each in-force policy, what is the probability it terminates within the
-      next twelve months? I trained a gradient-boosted tree model (<span class="bi-mono">HistGradientBoostingClassifier</span>)
-      and, deliberately, a plain <span class="bi-mono">LogisticRegression</span> alongside it as a simpler, more
-      interpretable challenger. Both were evaluated with 5-fold stratified cross-validation rather than a single lucky
-      split.</p>
-    <p>The honest result is that <b>they tie</b>. The boosted model averages <b>{cv_gbm}</b> AUC across folds; the
-      logistic model averages <b>{cv_log}</b>. That difference is {gap_word}. The engineered non-linear interactions buy
-      almost nothing here, which is a useful finding in itself: for a regulated insurer, <b>a transparent GLM that
-      performs as well as a black box is the one you would actually ship.</b></p>
-    <p class="honesty"><b>How to read the accuracy.</b> Because the labels come from a synthetic process I designed, this
-      AUC measures how well the model recovers <i>that</i> process, not real-world lapse skill. On a real book, expect
-      lower. The value on this page is the pipeline and the framing, not the headline number.</p>
+    <p>I framed lapse as a yes/no prediction: for each policy, the probability it ends within the next twelve months. I
+      trained a gradient-boosted tree model and, on purpose, a plain logistic regression next to it as an
+      easy-to-explain benchmark. I scored both with <b>5-fold cross-validation</b>: train on 80% of the data, test on the
+      held-out 20%, rotate five times and average, so the result is not a fluke of one split.</p>
+    <p>I measured them with <b>AUC</b>, the standard ranking score: the chance the model gives a random lapser a higher
+      risk than a random stayer (0.5 is a coin flip, 1.0 is perfect). The boosted model scored <b>{cv_gbm}</b> and the
+      logistic <b>{cv_log}</b>. Comparing the two on the same folds (a paired test), the boosted model's <b>+{gap_v}</b>
+      edge is statistically real (p = {gap_p}) but <b>practically negligible</b>: half a thousandth of AUC. So unless
+      that sliver of ranking power is worth it, I would ship the <b>simpler, more transparent logistic model</b>, the
+      kind a regulator is comfortable with. Knowing the difference between "significant" and "meaningful" is the point.</p>
+    <p class="honesty"><b>How to read this 0.79.</b> Because the data is synthetic, the score measures how well the
+      pipeline recovers a pattern I built in, not real-world lapse skill, and the same caveat applies to the drivers,
+      SHAP, segments and ROI below: they show the method working on a known signal, not validated facts about real
+      lapse. On a real book the code runs unchanged; the numbers would be lower. The point is the approach.</p>
     <div class="bi-kpi-row" id="modelKpis"></div>
     <figure class="fig">
       <div class="cap-h">What drives lapse</div>
       <div class="chart" id="cImp" style="height:340px"></div>
-      <figcaption>Permutation importance (drop in AUC when a feature is shuffled). Error bars are ±1 standard deviation
-        over 30 repeats.</figcaption>
+      <figcaption>Permutation importance: how much accuracy drops when each feature is scrambled. A bigger drop means
+        the model leaned on it more. Bars average 30 repeats; the lines are ±1 standard deviation.</figcaption>
     </figure>
-    <p>The drivers line up with the actuarial literature, and crucially <b>none of the top ones are demographics you
-      cannot change</b>. They are <b>operational signals</b> a retention team can act on:</p>
+    <p>The top drivers match the actuarial literature. Some (tenure, channel, product) are structural and you cannot
+      change them, but the most useful ones, <b>payment method, servicing gaps and recent complaints</b>, are
+      <b>levers a retention team can actually pull</b>, not fixed traits like age:</p>
     <ul class="flow" id="driverNotes"></ul>
-    <p>To avoid relying on a single attribution method, I also computed <b>SHAP values</b>, which decompose each
-      prediction into per-feature contributions. The two methods agree on the cast of important features even if they
-      rank them slightly differently, and SHAP has the advantage of <b>explaining individual policies</b>, not just the
-      model as a whole.</p>
+    <p>Permutation importance ranks features for the model as a whole. <b>SHAP</b> goes one step further and explains a
+      <b>single policy</b>: how each of its attributes pushed that customer's risk above or below the average. Same cast
+      of important features, now as a per-customer reason an agent can act on.</p>
     <div class="fig-2">
       <figure class="fig">
         <div class="cap-h">SHAP: global attribution</div>
         <div class="chart" id="cShapG" style="height:300px"></div>
-        <figcaption>Mean absolute SHAP value per feature. Broadly agrees with permutation importance on which features
-          matter; the ordering differs (SHAP leads with channel, permutation with tenure).</figcaption>
+        <figcaption>Mean absolute SHAP value per feature. It agrees with permutation importance on which features
+          matter; the order differs because the two ask different questions (permutation: how much accuracy is lost;
+          SHAP: average size of contribution, which can favour many-valued features like channel).</figcaption>
       </figure>
       <figure class="fig">
         <div class="cap-h">SHAP: one policyholder explained</div>
@@ -273,14 +276,17 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
       <figure class="fig">
         <div class="cap-h">ROC curve</div>
         <div class="chart" id="cRoc" style="height:300px"></div>
-        <figcaption>Single-split test AUC {auc} (boosted) vs {H['auc_logistic']:.3f} (logistic). The 5-fold figure above
-          is the one to trust; the two models essentially overlap.</figcaption>
+        <figcaption>The ROC curve traces how many real lapsers you catch (vertical) against the false alarms you accept
+          (horizontal) as you loosen the threshold. The further above the diagonal, the better the ranking. Test AUC
+          {auc} (boosted) vs {H['auc_logistic']:.3f} (logistic); the cross-validated number above is the one to trust.</figcaption>
       </figure>
       <figure class="fig">
         <div class="cap-h">Calibration</div>
         <div class="chart" id="cCal" style="height:300px"></div>
-        <figcaption>Predicted vs observed lapse by decile. Points sit close to the diagonal (Brier {brier}), so the
-          probabilities can be used as probabilities, not just as a ranking.</figcaption>
+        <figcaption>Each dot is a group of policies: the risk the model predicted (horizontal) vs how many actually
+          lapsed (vertical). On the diagonal means the predicted percentages are true percentages. (Brier {brier}; a
+          guess-the-base-rate model would score about 0.068, so this is a real but modest gain.) This is what lets the
+          scores feed a money calculation, not just a ranking.</figcaption>
       </figure>
     </div>
     <p>Because the scores rank well, <b>risk is concentrated</b>. Contacting the riskiest <b>20%</b> of the book reaches
@@ -297,10 +303,11 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
       <figure class="fig">
         <div class="cap-h">Lapse rate by policy duration</div>
         <div class="chart" id="cSurv" style="height:280px"></div>
-        <figcaption>Lapse is really a time-to-event problem, best modelled as a discrete-time hazard or a Cox fit in
-          production. This book only records a forward 12-month flag, so rather than fake a cohort survival curve I show
-          the well-defined object: 12-month lapse rate by current duration, front-loaded at {haz0} in year one. That
-          shape is what motivates the 13- and 25-month persistency milestones the industry tracks.</figcaption>
+        <figcaption>Lapse is really a question of <i>when</i>, not just whether, which in production you would model as
+          a survival (hazard) curve. This dataset only flags lapse over the next 12 months, so instead of faking a
+          survival curve I show the honest version: the 12-month lapse rate by how long the policy has been held. It is
+          highest early ({haz0} in year one) and falls as policies settle, the front-loaded pattern behind the 13- and
+          25-month marks (the two points at which insurers conventionally check early persistency).</figcaption>
       </figure>
     </div>
     <p class="tbl-cap">Risk decile detail</p>
@@ -315,11 +322,12 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
   <section class="sec">
     <h2><span class="n">4</span>Who are they? Segmenting the book</h2>
     <p class="sec-meta">k-means · 5 behavioural segments</p>
-    <p>Ranking tells you <i>who</i> to call first. Segmentation tells you <i>what to say</i>. Grouping policyholders by
-      value and behaviour turns one model score into a handful of strategies a retention team can brief against. I used
-      k-means and chose <b>five segments</b> for actionability, one play each. I am not pretending these are clean natural
-      clusters: the silhouette score at k=5 is modest ({sil5:.2f}) and the segments overlap, so they are <b>management
-      lenses, not hard partitions</b>. The pattern that matters survives that caveat.</p>
+    <p>Ranking tells you <i>who</i> to call first. Segmentation tells you <i>what to say</i>. I used <b>k-means</b>, which
+      groups customers so that each group is as internally similar as possible, on value and behaviour, and picked
+      <b>five groups</b> so each gets one clear retention play. I am not claiming these are sharp natural clusters: the
+      silhouette score (a 0-to-1 measure of how cleanly separated the groups are) is only {sil5:.2f}, so they overlap.
+      Treat them as <b>management lenses, not hard boxes</b>. The one pattern that matters holds regardless: the
+      highest-value group also churns above average, so the most valuable customers are the least safe.</p>
     <figure class="fig">
       <div class="cap-h">Value vs risk</div>
       <div class="chart" id="cSeg" style="height:460px"></div>
@@ -334,12 +342,14 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
   <section class="sec">
     <h2><span class="n">5</span>What is it worth?</h2>
     <p class="sec-meta">Targeted retention programme · illustrative book of ~1.2M policies</p>
-    <p>A model only earns its keep if the intervention it enables <b>pays for itself</b>. The logic is simple to state:
-      score the book, target the riskiest two deciles, spend a fixed amount per policyholder on outreach and friction
-      removal (an auto-pay conversion, a flexible payment plan, a service call), and assume that effort cuts lapse among
-      those contacted by a modest relative amount. The value credited is <b>only the lifetime value of the policies that
-      would actually have lapsed</b>, not the average of everyone contacted, so the gain is not inflated by the roughly
-      80% of the targeted group who were never going to leave.</p>
+    <p>A model only earns its keep if acting on it <b>beats the cost</b>. The logic: target the riskiest 20% (240,000
+      policies, which hold 64% of expected lapses), spend ¥7,500 each on a save effort (auto-pay conversion, flexible
+      terms, a service call), and assume that cuts their lapse rate by <b>20%</b> (an assumption, flagged as one). I
+      credit value only on the policies that <b>would actually have lapsed</b>, valued at their <b>lifetime value</b>
+      (CLV: roughly the future profit from that policy, discounted to today), so I am not counting the ~80% who were
+      never going to leave. That nets ~11,000 policies saved and ¥3.3bn of value retained against ¥1.8bn spent, a
+      <b>1.8× return</b> (net ¥1.5bn). The CLV here is illustrative gross margin, not a full embedded-value calculation
+      and not netted for the surrender value a lapsing policy might pay, so read the yen as directional.</p>
     <ul class="flow" id="roiSteps"></ul>
     <div class="fig-2">
       <figure class="fig">
@@ -385,15 +395,15 @@ figure.fig figcaption {{ font-size: .8rem; color: var(--muted); line-height: 1.5
   <section class="sec">
     <h2><span class="n">7</span>How it would actually ship</h2>
     <p class="sec-meta">Proposed production architecture, not yet built</p>
-    <p>Everything above runs on my laptop. Making it useful inside MetLife means putting it on a cadence and into the
-      hands of the people who talk to customers. I want to be clear about <b>the line between what is built here and what
-      is a proposal</b>: the SHAP explanations and the fairness audit above are <b>implemented</b>; the Azure and MLOps
-      plumbing below is how I would productionise it, <b>not something I have stood up</b>.</p>
+    <p>Everything above runs on a laptop. Making it useful in production means putting it on a schedule and into the
+      hands of the people who talk to customers. To be clear about <b>what is built here versus what is a proposal</b>:
+      the SHAP explanations and the fairness check above are <b>implemented</b>; the cloud and MLOps plumbing below is
+      how I would productionise it, <b>not something I have stood up</b>.</p>
     <div class="fig-2">
       <figure class="fig">
         <div class="cap-h">Pipeline (proposed)</div>
         <ul class="flow">
-          <li>Monthly scoring of the in-force book on Azure ML, with features drawn from policy, billing and servicing systems.</li>
+          <li>Monthly scoring of the in-force book on a cloud ML platform, with features from policy, billing and servicing systems.</li>
           <li>Per-policy SHAP (built here) surfaced to retention teams so they see <i>why</i> a policy is flagged.</li>
           <li>Scores pushed to Power BI for agents and bancassurance partners; high risk crossed with high value triggers outreach.</li>
           <li>CI/CD and MLOps: versioned data, drift monitoring, predicted-vs-actual lapse calibration tracked every cycle.</li>

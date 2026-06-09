@@ -155,13 +155,19 @@ log = Pipeline([("pre", ColumnTransformer([
 log.fit(Xtr, ytr)
 auc_log = roc_auc_score(yte, log.predict_proba(Xte)[:, 1])
 
-# 5-fold stratified CV with intervals -> is the GBM-vs-logistic gap real or noise?
+# 5-fold stratified CV -> is the GBM-vs-logistic gap real or noise?
+# Both models are scored on the SAME folds (same cv object/seed), so the correct
+# test is a PAIRED one on the per-fold differences, not each model's own spread.
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=7)
 cv_gbm = cross_val_score(gbm, X, y, cv=cv, scoring="roc_auc", n_jobs=-1)
 cv_log = cross_val_score(log, X, y, cv=cv, scoring="roc_auc", n_jobs=-1)
-gap = cv_gbm.mean() - cv_log.mean()
-pooled_sd = float(np.sqrt(cv_gbm.std(ddof=1) ** 2 + cv_log.std(ddof=1) ** 2))
-gap_significant = bool(abs(gap) > pooled_sd)   # crude: gap exceeds combined 1-sigma
+gap = float(cv_gbm.mean() - cv_log.mean())
+delta = cv_gbm - cv_log                          # per-fold paired differences
+gap_sd = float(delta.std(ddof=1))                # spread of the DIFFERENCE
+from scipy import stats as _stats
+_t, gap_p = _stats.ttest_rel(cv_gbm, cv_log)     # paired t-test across folds
+gap_p = float(gap_p)
+gap_significant = bool(gap_p < 0.05)
 
 # ROC curve (thinned)
 fpr, tpr, _ = roc_curve(yte, proba)
@@ -427,6 +433,8 @@ payload = {
         "auc_log_cv_mean": round(float(cv_log.mean()), 4),
         "auc_log_cv_std": round(float(cv_log.std(ddof=1)), 4),
         "gbm_gap": round(float(gap), 4),
+        "gbm_gap_sd": round(gap_sd, 4),
+        "gbm_gap_p": round(gap_p, 3),
         "gap_significant": gap_significant,
     },
     "roc": roc_pts,

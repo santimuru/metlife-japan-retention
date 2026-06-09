@@ -15,7 +15,9 @@
     "auc_log_cv_mean": 0.7882,
     "auc_log_cv_std": 0.0089,
     "gbm_gap": 0.0052,
-    "gap_significant": false
+    "gbm_gap_sd": 0.0039,
+    "gbm_gap_p": 0.038,
+    "gap_significant": true
   },
   "roc": [
     {

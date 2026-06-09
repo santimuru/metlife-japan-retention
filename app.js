@@ -1,4 +1,4 @@
-/* MetLife Japan retention demo, render layer (ECharts + DOM). */
+/* Japanese life-insurance lapse demo, render layer (ECharts + DOM). */
 (function () {
   "use strict";
   var FONT = "Inter, system-ui, sans-serif";
@@ -57,8 +57,8 @@
 
   /* ---- 2. model headline ---- */
   document.getElementById("modelKpis").innerHTML = [
-    kpiTile("Model AUC (5-fold CV)", H.auc_cv_mean.toFixed(3), "±" + H.auc_cv_std.toFixed(3) + " · logistic " + H.auc_log_cv_mean.toFixed(3) + " (ties)"),
-    kpiTile("Base lapse rate", pct(H.overall_lapse_rate, 1), "12-month, full book"),
+    kpiTile("Model AUC (5-fold CV)", H.auc_cv_mean.toFixed(3), "±" + H.auc_cv_std.toFixed(3) + " · logistic " + H.auc_log_cv_mean.toFixed(3) + " (+" + H.gbm_gap.toFixed(3) + ", negligible)"),
+    kpiTile("Base lapse rate", pct(H.overall_lapse_rate, 1), "12-month, synthetic (market ~5.9%)"),
     kpiTile("Top-decile lift", L[0].lift + "×", "vs random targeting"),
     kpiTile("Captured in top 20%", pct(R.capture_top2_deciles, 0), "of all lapses, by score"),
   ].join("");
@@ -137,8 +137,8 @@
       return { value: c.value, itemStyle: { color: c.value >= 0 ? PAL.neg : PAL.pos } }; }), barWidth: "60%" }],
   });
   document.getElementById("shapLocalNote").innerHTML =
-    "This policyholder scores <b>" + pct(sl.risk, 0) + "</b> lapse risk. SHAP decomposes that score into per-feature " +
-    "contributions (log-odds) from the book-average baseline. The explanation a retention agent would act on.";
+    "This policyholder scores <b>" + pct(sl.risk, 0) + "</b> lapse risk. The bars show what moved them there: each " +
+    "attribute pushes risk up (red) or down (green) from the average customer. The reason an agent would act on.";
 
   /* ---- 3. performance ---- */
   mk("cRoc").setOption({
