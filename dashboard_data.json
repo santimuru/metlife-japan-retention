@@ -1,0 +1,869 @@
+{
+  "meta": {
+    "n_policyholders": 60000,
+    "data_nature": "Synthetic policyholder book generated for demonstration; lapse drivers and their direction follow published life-insurance actuarial evidence. Market-context figures are real and cited.",
+    "book_scale_assumption": 1200000,
+    "built": "2026-06-09"
+  },
+  "headline": {
+    "overall_lapse_rate": 0.0736,
+    "auc": 0.8029,
+    "auc_logistic": 0.8008,
+    "brier": 0.0565,
+    "auc_cv_mean": 0.7935,
+    "auc_cv_std": 0.0089,
+    "auc_log_cv_mean": 0.7882,
+    "auc_log_cv_std": 0.0089,
+    "gbm_gap": 0.0052,
+    "gap_significant": false
+  },
+  "roc": [
+    {
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "fpr": 0.0013,
+      "tpr": 0.0771
+    },
+    {
+      "fpr": 0.0027,
+      "tpr": 0.1052
+    },
+    {
+      "fpr": 0.0051,
+      "tpr": 0.1333
+    },
+    {
+      "fpr": 0.0068,
+      "tpr": 0.1568
+    },
+    {
+      "fpr": 0.0092,
+      "tpr": 0.1822
+    },
+    {
+      "fpr": 0.0122,
+      "tpr": 0.2067
+    },
+    {
+      "fpr": 0.0155,
+      "tpr": 0.2276
+    },
+    {
+      "fpr": 0.0189,
+      "tpr": 0.252
+    },
+    {
+      "fpr": 0.0225,
+      "tpr": 0.2729
+    },
+    {
+      "fpr": 0.026,
+      "tpr": 0.2919
+    },
+    {
+      "fpr": 0.0289,
+      "tpr": 0.3083
+    },
+    {
+      "fpr": 0.033,
+      "tpr": 0.3237
+    },
+    {
+      "fpr": 0.0381,
+      "tpr": 0.34
+    },
+    {
+      "fpr": 0.0419,
+      "tpr": 0.3617
+    },
+    {
+      "fpr": 0.0458,
+      "tpr": 0.3844
+    },
+    {
+      "fpr": 0.0492,
+      "tpr": 0.4007
+    },
+    {
+      "fpr": 0.0544,
+      "tpr": 0.418
+    },
+    {
+      "fpr": 0.0567,
+      "tpr": 0.4352
+    },
+    {
+      "fpr": 0.0627,
+      "tpr": 0.4506
+    },
+    {
+      "fpr": 0.0726,
+      "tpr": 0.466
+    },
+    {
+      "fpr": 0.078,
+      "tpr": 0.4805
+    },
+    {
+      "fpr": 0.0841,
+      "tpr": 0.4977
+    },
+    {
+      "fpr": 0.0934,
+      "tpr": 0.5122
+    },
+    {
+      "fpr": 0.1009,
+      "tpr": 0.5295
+    },
+    {
+      "fpr": 0.107,
+      "tpr": 0.5449
+    },
+    {
+      "fpr": 0.1144,
+      "tpr": 0.5594
+    },
+    {
+      "fpr": 0.1193,
+      "tpr": 0.5739
+    },
+    {
+      "fpr": 0.1318,
+      "tpr": 0.5893
+    },
+    {
+      "fpr": 0.1385,
+      "tpr": 0.6056
+    },
+    {
+      "fpr": 0.1513,
+      "tpr": 0.6192
+    },
+    {
+      "fpr": 0.1623,
+      "tpr": 0.6328
+    },
+    {
+      "fpr": 0.1757,
+      "tpr": 0.6473
+    },
+    {
+      "fpr": 0.1882,
+      "tpr": 0.6627
+    },
+    {
+      "fpr": 0.2075,
+      "tpr": 0.6763
+    },
+    {
+      "fpr": 0.2249,
+      "tpr": 0.6917
+    },
+    {
+      "fpr": 0.239,
+      "tpr": 0.7063
+    },
+    {
+      "fpr": 0.2636,
+      "tpr": 0.7208
+    },
+    {
+      "fpr": 0.2812,
+      "tpr": 0.7344
+    },
+    {
+      "fpr": 0.2946,
+      "tpr": 0.748
+    },
+    {
+      "fpr": 0.3181,
+      "tpr": 0.7616
+    },
+    {
+      "fpr": 0.3409,
+      "tpr": 0.7761
+    },
+    {
+      "fpr": 0.3701,
+      "tpr": 0.7888
+    },
+    {
+      "fpr": 0.3927,
+      "tpr": 0.8024
+    },
+    {
+      "fpr": 0.4184,
+      "tpr": 0.816
+    },
+    {
+      "fpr": 0.4427,
+      "tpr": 0.8305
+    },
+    {
+      "fpr": 0.4666,
+      "tpr": 0.8432
+    },
+    {
+      "fpr": 0.5004,
+      "tpr": 0.8586
+    },
+    {
+      "fpr": 0.5329,
+      "tpr": 0.8722
+    },
+    {
+      "fpr": 0.549,
+      "tpr": 0.883
+    },
+    {
+      "fpr": 0.598,
+      "tpr": 0.8948
+    },
+    {
+      "fpr": 0.6334,
+      "tpr": 0.9093
+    },
+    {
+      "fpr": 0.6617,
+      "tpr": 0.922
+    },
+    {
+      "fpr": 0.6938,
+      "tpr": 0.9347
+    },
+    {
+      "fpr": 0.7215,
+      "tpr": 0.9474
+    },
+    {
+      "fpr": 0.7623,
+      "tpr": 0.9574
+    },
+    {
+      "fpr": 0.8033,
+      "tpr": 0.9683
+    },
+    {
+      "fpr": 0.8547,
+      "tpr": 0.9773
+    },
+    {
+      "fpr": 0.9277,
+      "tpr": 0.9882
+    },
+    {
+      "fpr": 1.0,
+      "tpr": 1.0
+    }
+  ],
+  "lift": [
+    {
+      "decile": 1,
+      "policyholders": 1500,
+      "avg_risk": 0.3182,
+      "actual_lapse_rate": 0.342,
+      "lift": 4.65,
+      "cum_capture": 0.4651
+    },
+    {
+      "decile": 2,
+      "policyholders": 1500,
+      "avg_risk": 0.1107,
+      "actual_lapse_rate": 0.1253,
+      "lift": 1.7,
+      "cum_capture": 0.6355
+    },
+    {
+      "decile": 3,
+      "policyholders": 1500,
+      "avg_risk": 0.0722,
+      "actual_lapse_rate": 0.0633,
+      "lift": 0.86,
+      "cum_capture": 0.7217
+    },
+    {
+      "decile": 4,
+      "policyholders": 1500,
+      "avg_risk": 0.0558,
+      "actual_lapse_rate": 0.048,
+      "lift": 0.65,
+      "cum_capture": 0.7869
+    },
+    {
+      "decile": 5,
+      "policyholders": 1500,
+      "avg_risk": 0.0459,
+      "actual_lapse_rate": 0.0433,
+      "lift": 0.59,
+      "cum_capture": 0.8459
+    },
+    {
+      "decile": 6,
+      "policyholders": 1500,
+      "avg_risk": 0.0383,
+      "actual_lapse_rate": 0.032,
+      "lift": 0.44,
+      "cum_capture": 0.8894
+    },
+    {
+      "decile": 7,
+      "policyholders": 1500,
+      "avg_risk": 0.0322,
+      "actual_lapse_rate": 0.03,
+      "lift": 0.41,
+      "cum_capture": 0.9302
+    },
+    {
+      "decile": 8,
+      "policyholders": 1500,
+      "avg_risk": 0.027,
+      "actual_lapse_rate": 0.0253,
+      "lift": 0.34,
+      "cum_capture": 0.9646
+    },
+    {
+      "decile": 9,
+      "policyholders": 1500,
+      "avg_risk": 0.0221,
+      "actual_lapse_rate": 0.0133,
+      "lift": 0.18,
+      "cum_capture": 0.9828
+    },
+    {
+      "decile": 10,
+      "policyholders": 1500,
+      "avg_risk": 0.016,
+      "actual_lapse_rate": 0.0127,
+      "lift": 0.17,
+      "cum_capture": 1.0
+    }
+  ],
+  "reliability": [
+    {
+      "pred": 0.3182,
+      "obs": 0.342
+    },
+    {
+      "pred": 0.1107,
+      "obs": 0.1253
+    },
+    {
+      "pred": 0.0722,
+      "obs": 0.0633
+    },
+    {
+      "pred": 0.0558,
+      "obs": 0.048
+    },
+    {
+      "pred": 0.0459,
+      "obs": 0.0433
+    },
+    {
+      "pred": 0.0383,
+      "obs": 0.032
+    },
+    {
+      "pred": 0.0322,
+      "obs": 0.03
+    },
+    {
+      "pred": 0.027,
+      "obs": 0.0253
+    },
+    {
+      "pred": 0.0221,
+      "obs": 0.0133
+    },
+    {
+      "pred": 0.016,
+      "obs": 0.0127
+    }
+  ],
+  "importance": [
+    {
+      "feature": "Policy tenure (years)",
+      "importance": 0.0721,
+      "std": 0.0059,
+      "pct": 100.0,
+      "std_pct": 8.2
+    },
+    {
+      "feature": "Payment method",
+      "importance": 0.0617,
+      "std": 0.0035,
+      "pct": 85.6,
+      "std_pct": 4.9
+    },
+    {
+      "feature": "Distribution channel",
+      "importance": 0.0392,
+      "std": 0.0044,
+      "pct": 54.4,
+      "std_pct": 6.1
+    },
+    {
+      "feature": "Recent complaint",
+      "importance": 0.0359,
+      "std": 0.0031,
+      "pct": 49.8,
+      "std_pct": 4.3
+    },
+    {
+      "feature": "Digital engagement",
+      "importance": 0.0125,
+      "std": 0.0022,
+      "pct": 17.3,
+      "std_pct": 3.1
+    },
+    {
+      "feature": "Product line",
+      "importance": 0.0105,
+      "std": 0.003,
+      "pct": 14.6,
+      "std_pct": 4.2
+    },
+    {
+      "feature": "Months since last servicing",
+      "importance": 0.0079,
+      "std": 0.002,
+      "pct": 11.0,
+      "std_pct": 2.8
+    },
+    {
+      "feature": "Premium-to-income ratio",
+      "importance": 0.0058,
+      "std": 0.0017,
+      "pct": 8.0,
+      "std_pct": 2.4
+    },
+    {
+      "feature": "Number of riders",
+      "importance": 0.0042,
+      "std": 0.0012,
+      "pct": 5.8,
+      "std_pct": 1.7
+    },
+    {
+      "feature": "Billing frequency",
+      "importance": 0.0026,
+      "std": 0.0016,
+      "pct": 3.6,
+      "std_pct": 2.2
+    }
+  ],
+  "shap_global": [
+    {
+      "feature": "Distribution channel",
+      "mean_abs": 0.3631,
+      "pct": 100.0
+    },
+    {
+      "feature": "Policy tenure (years)",
+      "mean_abs": 0.3118,
+      "pct": 85.9
+    },
+    {
+      "feature": "Product line",
+      "mean_abs": 0.3016,
+      "pct": 83.1
+    },
+    {
+      "feature": "Payment method",
+      "mean_abs": 0.2808,
+      "pct": 77.3
+    },
+    {
+      "feature": "Digital engagement",
+      "mean_abs": 0.1561,
+      "pct": 43.0
+    },
+    {
+      "feature": "Recent complaint",
+      "mean_abs": 0.1534,
+      "pct": 42.2
+    },
+    {
+      "feature": "Months since last servicing",
+      "mean_abs": 0.1168,
+      "pct": 32.2
+    },
+    {
+      "feature": "Policyholder age",
+      "mean_abs": 0.1018,
+      "pct": 28.0
+    },
+    {
+      "feature": "Number of riders",
+      "mean_abs": 0.0797,
+      "pct": 21.9
+    },
+    {
+      "feature": "Premium-to-income ratio",
+      "mean_abs": 0.0732,
+      "pct": 20.2
+    }
+  ],
+  "shap_local": {
+    "risk": 0.8411,
+    "base": -2.95,
+    "contributions": [
+      {
+        "feature": "Recent complaint",
+        "value": 2.4599
+      },
+      {
+        "feature": "Months since last servicing",
+        "value": 1.1539
+      },
+      {
+        "feature": "Digital engagement",
+        "value": 0.2935
+      },
+      {
+        "feature": "Distribution channel = Tied agent (face-to-face)",
+        "value": 0.2514
+      },
+      {
+        "feature": "Distribution channel = Direct / online",
+        "value": 0.2131
+      },
+      {
+        "feature": "Payment method = Credit card",
+        "value": 0.1491
+      },
+      {
+        "feature": "Product line = Medical / cancer (A&H)",
+        "value": 0.1276
+      },
+      {
+        "feature": "Billing frequency",
+        "value": 0.0977
+      }
+    ]
+  },
+  "segments": [
+    {
+      "id": 3,
+      "size": 9682,
+      "share": 0.1614,
+      "lapse_rate": 0.096,
+      "avg_age": 52.2,
+      "avg_tenure": 5.9,
+      "avg_premium": 738134,
+      "avg_prem_to_income": 0.1672,
+      "avg_digital": 49.6,
+      "avg_clv": 799492,
+      "top_product": "Foreign-currency whole life",
+      "top_channel": "Tied agent (face-to-face)",
+      "name": "High-value, at-risk",
+      "play": "Largest lifetime value AND above-average churn, mostly FX whole-life with stretched premium-to-income. The #1 retention priority: most value at stake per save."
+    },
+    {
+      "id": 0,
+      "size": 7697,
+      "share": 0.1283,
+      "lapse_rate": 0.1048,
+      "avg_age": 51.8,
+      "avg_tenure": 5.6,
+      "avg_premium": 237039,
+      "avg_prem_to_income": 0.0445,
+      "avg_digital": 49.3,
+      "avg_clv": 243385,
+      "top_product": "Medical / cancer (A&H)",
+      "top_channel": "Tied agent (face-to-face)",
+      "name": "Affordability-stressed",
+      "play": "Highest churn of the book: early-duration policies under payment pressure. Proactive save via auto-pay conversion, flexible payment, premium-holiday offers."
+    },
+    {
+      "id": 1,
+      "size": 17718,
+      "share": 0.2953,
+      "lapse_rate": 0.0632,
+      "avg_age": 42.2,
+      "avg_tenure": 4.9,
+      "avg_premium": 202291,
+      "avg_prem_to_income": 0.038,
+      "avg_digital": 66.8,
+      "avg_clv": 216555,
+      "top_product": "Medical / cancer (A&H)",
+      "top_channel": "Tied agent (face-to-face)",
+      "name": "Digital self-servers",
+      "play": "Younger, engaged online, lower-touch. Retain cheaply via app nudges, e-statements and digital renewal flows."
+    },
+    {
+      "id": 2,
+      "size": 17119,
+      "share": 0.2853,
+      "lapse_rate": 0.0733,
+      "avg_age": 62.5,
+      "avg_tenure": 4.9,
+      "avg_premium": 202205,
+      "avg_prem_to_income": 0.0379,
+      "avg_digital": 31.2,
+      "avg_clv": 193970,
+      "top_product": "Medical / cancer (A&H)",
+      "top_channel": "Tied agent (face-to-face)",
+      "name": "Mature stable core",
+      "play": "Older, sticky book. Retirement, long-term-care and legacy products; preserve persistency, avoid over-contact."
+    },
+    {
+      "id": 4,
+      "size": 7784,
+      "share": 0.1297,
+      "lapse_rate": 0.0388,
+      "avg_age": 52.0,
+      "avg_tenure": 14.6,
+      "avg_premium": 243585,
+      "avg_prem_to_income": 0.0462,
+      "avg_digital": 50.3,
+      "avg_clv": 115582,
+      "top_product": "Medical / cancer (A&H)",
+      "top_channel": "Tied agent (face-to-face)",
+      "name": "Loyal low-touch core",
+      "play": "Lowest churn, modest value. Keep cost-to-serve low; deepen with medical/cancer riders to lift lifetime value over time."
+    }
+  ],
+  "silhouette": [
+    {
+      "k": 2,
+      "silhouette": 0.2222
+    },
+    {
+      "k": 3,
+      "silhouette": 0.152
+    },
+    {
+      "k": 4,
+      "silhouette": 0.1534
+    },
+    {
+      "k": 5,
+      "silhouette": 0.1557
+    },
+    {
+      "k": 6,
+      "silhouette": 0.1544
+    },
+    {
+      "k": 7,
+      "silhouette": 0.1492
+    }
+  ],
+  "fairness": {
+    "by_age": [
+      {
+        "group": "<40",
+        "n": 3016,
+        "lapse": 0.0799,
+        "flagged_rate": 0.2132,
+        "auc": 0.8003
+      },
+      {
+        "group": "40-54",
+        "n": 5934,
+        "lapse": 0.0753,
+        "flagged_rate": 0.2108,
+        "auc": 0.8155
+      },
+      {
+        "group": "55-69",
+        "n": 4633,
+        "lapse": 0.0693,
+        "flagged_rate": 0.1807,
+        "auc": 0.7952
+      },
+      {
+        "group": "70+",
+        "n": 1417,
+        "lapse": 0.0663,
+        "flagged_rate": 0.1898,
+        "auc": 0.7772
+      }
+    ],
+    "by_income": [
+      {
+        "group": "Lower third",
+        "n": 5000,
+        "lapse": 0.078,
+        "flagged_rate": 0.2288,
+        "auc": 0.8185
+      },
+      {
+        "group": "Middle third",
+        "n": 5000,
+        "lapse": 0.0734,
+        "flagged_rate": 0.1956,
+        "auc": 0.8143
+      },
+      {
+        "group": "Upper third",
+        "n": 5000,
+        "lapse": 0.0692,
+        "flagged_rate": 0.1756,
+        "auc": 0.7759
+      }
+    ],
+    "auc_spread": 0.0426,
+    "flag_spread": 0.0532,
+    "note": "Flagged = top-20% risk score (the targeting cut). Ranking quality is broadly comparable (AUC 0.78-0.82), but it is NOT identical: the 70+ and upper-income groups score a few points lower, and the lower-income third is flagged more often (23%) than the upper third (18%). That tracks genuine risk, but the gap is real; in production it would warrant a documented fairness review and possibly group-aware thresholds, not a clean bill of health."
+  },
+  "duration_profile": {
+    "hazard": [
+      {
+        "t": 0,
+        "h": 0.2329
+      },
+      {
+        "t": 1,
+        "h": 0.159
+      },
+      {
+        "t": 2,
+        "h": 0.0794
+      },
+      {
+        "t": 3,
+        "h": 0.0649
+      },
+      {
+        "t": 4,
+        "h": 0.0599
+      },
+      {
+        "t": 5,
+        "h": 0.0522
+      },
+      {
+        "t": 6,
+        "h": 0.0562
+      },
+      {
+        "t": 7,
+        "h": 0.0499
+      },
+      {
+        "t": 8,
+        "h": 0.059
+      },
+      {
+        "t": 9,
+        "h": 0.0771
+      },
+      {
+        "t": 10,
+        "h": 0.0686
+      },
+      {
+        "t": 11,
+        "h": 0.05
+      },
+      {
+        "t": 12,
+        "h": 0.0308
+      },
+      {
+        "t": 13,
+        "h": 0.0387
+      },
+      {
+        "t": 14,
+        "h": 0.0233
+      },
+      {
+        "t": 15,
+        "h": 0.031
+      },
+      {
+        "t": 16,
+        "h": 0.0376
+      },
+      {
+        "t": 17,
+        "h": 0.046
+      },
+      {
+        "t": 18,
+        "h": 0.0334
+      },
+      {
+        "t": 19,
+        "h": 0.0268
+      },
+      {
+        "t": 20,
+        "h": 0.0583
+      }
+    ]
+  },
+  "roi": {
+    "targeted_policyholders": 240000,
+    "expected_lapsers_in_target": 56080,
+    "assumed_relative_uplift": 0.2,
+    "assumed_cost_per_policyholder_jpy": 7500,
+    "saved_policies": 11216,
+    "avg_clv_jpy": 296025,
+    "value_retained_jpy": 3320221153,
+    "campaign_cost_jpy": 1800000000,
+    "net_benefit_jpy": 1520221153,
+    "roi_x": 1.8,
+    "capture_top2_deciles": 0.6355,
+    "breakeven_uplift": 0.1084
+  },
+  "roi_sensitivity": {
+    "uplift": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25
+    ],
+    "cost": [
+      5000,
+      7500,
+      10000,
+      15000,
+      20000
+    ],
+    "net_billions": [
+      [
+        -0.37,
+        -0.97,
+        -1.57,
+        -2.77,
+        -3.97
+      ],
+      [
+        0.46,
+        -0.14,
+        -0.74,
+        -1.94,
+        -3.14
+      ],
+      [
+        1.29,
+        0.69,
+        0.09,
+        -1.11,
+        -2.31
+      ],
+      [
+        2.12,
+        1.52,
+        0.92,
+        -0.28,
+        -1.48
+      ],
+      [
+        2.95,
+        2.35,
+        1.75,
+        0.55,
+        -0.65
+      ]
+    ]
+  }
+}

@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predicting and preventing policy lapse · MetLife Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+/* =============================================================
+   BI Design System v0.1 - light minimalista tecnico
+   Para reportes HTML de business intelligence (Montecable).
+   Embebible: copiar este bloque dentro del <style> de cada reporte.
+   ============================================================= */
+
+:root {
+  /* Color (OKLCH, tinted toward brand hue 250). Bans:
+     no pure #fff/#000, no gradient text, no side-stripe borders */
+  --bg:           oklch(99% 0.004 250);
+  --surface:      oklch(98% 0.005 250);
+  --surface-2:    oklch(96% 0.006 250);
+  --border:       oklch(91% 0.008 250);
+  --border-strong:oklch(85% 0.01 250);
+  --text:         oklch(22% 0.015 250);
+  --text-2:       oklch(40% 0.012 250);
+  --muted:        oklch(58% 0.01 250);
+  --subtle:       oklch(72% 0.008 250);
+
+  --accent:       oklch(58% 0.18 252);
+  --accent-soft:  oklch(96% 0.025 252);
+  --accent-text:  oklch(45% 0.18 252);
+
+  --pos:          oklch(58% 0.13 155);
+  --pos-soft:     oklch(96% 0.025 155);
+  --warn:         oklch(70% 0.14 75);
+  --warn-soft:    oklch(96% 0.04 80);
+  --neg:          oklch(58% 0.17 25);
+  --neg-soft:     oklch(96% 0.03 25);
+
+  /* Typography. Inter primary, system fallback. Fixed rem scale 1.125 ratio */
+  --font-sans: 'Inter','Inter Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --font-mono: 'JetBrains Mono','SF Mono',ui-monospace,Consolas,monospace;
+
+  --text-xs:   0.75rem;   /* 12 */
+  --text-sm:   0.8125rem; /* 13 */
+  --text-base: 0.9375rem; /* 15 */
+  --text-md:   1.0625rem; /* 17 */
+  --text-lg:   1.25rem;   /* 20 */
+  --text-xl:   1.625rem;  /* 26 */
+  --text-2xl:  2.125rem;  /* 34 */
+  --text-3xl:  2.75rem;   /* 44 */
+
+  --leading-tight:  1.25;
+  --leading-snug:   1.4;
+  --leading-normal: 1.55;
+  --leading-loose:  1.7;
+
+  --tracking-tight: -0.011em;
+  --tracking-wide:  0.04em;
+
+  /* Spacing scale (4px base) */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* Radius (small, no rounded-pill abuse) */
+  --radius-sm: 3px;
+  --radius:    5px;
+  --radius-lg: 8px;
+
+  /* Motion: 150-250ms ease-out exponential, no bounce */
+  --ease:     cubic-bezier(.22,1,.36,1);
+  --dur-fast: 120ms;
+  --dur:      180ms;
+}
+
+/* Reset minimo */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--accent-text); text-decoration: none; }
+a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+/* === card ===
+   Base container. Sin sombras. Border 1px. Padding generoso. */
+.bi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+.bi-card + .bi-card { margin-top: var(--space-4); }
+
+/* === kpi-tile ===
+   Antitemplate: NO gradient text, NO color block, NO side-stripe.
+   Label arriba uppercase pequeno, valor grande pero NO ostentoso,
+   sub abajo opcional. Densidad horizontal en kpi-row. */
+.bi-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.bi-kpi {
+  background: var(--surface);
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.bi-kpi-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.bi-kpi-value {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.bi-kpi-sub {
+  font-size: var(--text-xs);
+  color: var(--text-2);
+  line-height: var(--leading-snug);
+}
+.bi-kpi-delta { font-weight: 500; }
+.bi-kpi-delta.pos { color: var(--pos); }
+.bi-kpi-delta.neg { color: var(--neg); }
+
+/* === data-table ===
+   Densa, alineacion contextual (texto izq, numero der), tabular-nums.
+   Sin zebra agresiva, separadores 1px. */
+.bi-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.bi-table thead th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+.bi-table tbody td {
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: baseline;
+}
+.bi-table tbody tr:last-child td { border-bottom: 0; }
+.bi-table tbody tr:hover td { background: var(--surface-2); }
+.bi-table .num,
+.bi-table th.num,
+.bi-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bi-table .muted { color: var(--muted); }
+
+/* === badge ===
+   Pill chico, low-saturation. Variantes semanticas. */
+.bi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  border-radius: 3px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.bi-badge.accent { background: var(--accent-soft); color: var(--accent-text); border-color: transparent; }
+.bi-badge.pos    { background: var(--pos-soft); color: var(--pos);   border-color: transparent; }
+.bi-badge.warn   { background: var(--warn-soft); color: oklch(45% 0.14 75); border-color: transparent; }
+.bi-badge.neg    { background: var(--neg-soft); color: var(--neg);   border-color: transparent; }
+
+/* === section-header ===
+   Title + opcional meta a la derecha. Sin border-bottom grueso.
+   Espacio inferior para separar de contenido. */
+.bi-section {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: var(--space-12) 0 var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.bi-section:first-child { margin-top: 0; }
+.bi-section h2 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+  margin: 0;
+}
+.bi-section .meta {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* === tooltip ===
+   Dark-on-light. Pequeno, denso, alta legibilidad. Posicionado via JS. */
+.bi-tip {
+  position: fixed;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+  max-width: 320px;
+  padding: var(--space-3) var(--space-4);
+  background: oklch(20% 0.015 250);
+  color: oklch(95% 0.005 250);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.bi-tip-title {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: oklch(99% 0 0);
+  margin-bottom: var(--space-1);
+}
+.bi-tip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 1px 0;
+}
+.bi-tip-key { color: oklch(70% 0.01 250); }
+.bi-tip-val { color: oklch(99% 0 0); font-variant-numeric: tabular-nums; }
+
+/* === utilidades minimas === */
+.bi-wrap   { max-width: 1180px; margin: 0 auto; padding: var(--space-8) var(--space-6); }
+.bi-stack  { display: flex; flex-direction: column; gap: var(--space-4); }
+.bi-row    { display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; }
+.bi-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); }
+.bi-num    { font-variant-numeric: tabular-nums; }
+.bi-mono   { font-family: var(--font-mono); }
+.bi-mute   { color: var(--muted); }
+
+/* === page intro (titulo + subtitulo, sin badge ni gradient hero) === */
+.bi-header { margin-bottom: var(--space-10); }
+.bi-header h1 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+  line-height: var(--leading-tight);
+}
+.bi-header .lede {
+  font-size: var(--text-md);
+  color: var(--text-2);
+  max-width: 65ch;
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+.bi-header .crumbs {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+/* =============== editorial layer (overrides the BI card chrome) =============== */
+body { background:#fff; }
+.article { max-width: 760px; margin: 0 auto; padding: var(--space-12) var(--space-6) var(--space-16); }
+
+/* type scale: one body size, one small (caption) size, deliberate headings */
+.article p { font-size: 1.0625rem; line-height: 1.72; color: var(--text); margin: 0 0 1.15rem; }
+.article h1 { font-size: 2.05rem; line-height: 1.16; font-weight: 700; letter-spacing: -.015em;
+  color: var(--text); margin: 0 0 1rem; }
+.article .lead { font-size: 1.2rem; line-height: 1.62; color: var(--text-2); margin: 0 0 1.6rem; font-weight: 400; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  font-weight: 600; margin: 0 0 1rem; }
+
+.sec { margin-top: 3.4rem; }
+.sec > h2 { font-size: 1.4rem; font-weight: 600; letter-spacing: -.01em; color: var(--text);
+  margin: 0 0 .3rem; padding-top: 1.6rem; border-top: 1px solid var(--border); }
+.sec > h2 .n { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: .55ch; font-weight: 700; }
+.sec-meta { font-size: .85rem; color: var(--muted); margin: 0 0 1.5rem; }
+
+/* figures: no box, just chart + caption */
+figure.fig { margin: 1.7rem 0; }
+figure.fig .cap-h { font-size: .95rem; font-weight: 600; color: var(--text); margin: 0 0 .15rem; }
+figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.55; margin-top: .55rem; }
+.chart { width: 100%; }
+.fig-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 1.8rem; margin: 1.7rem 0; align-items: start; }
+.fig-2 figure.fig { margin: 0; }
+.split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: start; margin: 1.7rem 0; }
+@media (max-width: 720px) { .fig-2, .split { grid-template-columns: 1fr; } }
+
+/* stat band: borderless KPI strip, hairline top/bottom (no individual boxes) */
+.bi-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 1.4rem 1.2rem;
+  margin: 1.7rem 0; padding: 1.2rem .2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.bi-kpi { background: none !important; border: none !important; box-shadow: none !important; padding: 0 !important;
+  display: flex; flex-direction: column; gap: 3px; }
+.bi-kpi-label { font-size: .78rem; color: var(--muted); font-weight: 500; }
+.bi-kpi-value { font-size: 1.5rem; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -.01em; }
+.bi-kpi-sub { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+
+/* honesty note: quiet, ruled, not a coloured chip */
+.honesty { border-left: 2px solid var(--accent); padding: .1rem 0 .1rem 1.1rem; margin: 1.5rem 0;
+  color: var(--text-2); font-size: .98rem; line-height: 1.6; }
+.honesty b { color: var(--text); }
+
+/* lists read at body weight, not tiny grey */
+.article ul.flow { margin: .6rem 0 1.2rem; padding-left: 1.2em; }
+.article ul.flow li { font-size: 1.02rem; line-height: 1.6; color: var(--text); margin: .45rem 0; }
+.article ul.flow li b { font-weight: 600; }
+
+/* tables: keep, give them a caption + breathing room */
+.tbl-cap { font-size: .95rem; font-weight: 600; color: var(--text); margin: 1.7rem 0 .5rem; }
+.bi-table { font-size: .92rem; }
+
+/* segment list: hairline-separated rows, not stacked cards */
+.bi-stack { display: flex; flex-direction: column; gap: 0; }
+.seg-card.bi-card { background: none; border: none; border-top: 1px solid var(--border); border-radius: 0;
+  box-shadow: none; padding: .9rem 0; gap: .35rem; }
+.seg-card.bi-card:first-child { border-top: none; padding-top: 0; }
+.seg-card h3 { font-size: .98rem; font-weight: 600; }
+.seg-card .seg-stat { font-size: .86rem; }
+.seg-card .note { font-size: .9rem !important; line-height: 1.5; color: var(--text-2) !important; }
+.dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: 0 0 auto; }
+
+/* author / publish footer */
+.author { margin-top: 3.6rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.author .name { font-size: 1.08rem; font-weight: 600; color: var(--text); margin: 0 0 .2rem; }
+.author .role { font-size: .92rem; color: var(--text-2); margin: 0 0 .7rem; }
+.author .links { font-size: .92rem; color: var(--text-2); }
+.author .links a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.author .links a:hover { text-decoration: underline; }
+.author .stack { font-size: .82rem; color: var(--muted); margin: 1rem 0 0; }
+.src { font-size: .85rem; color: var(--muted); line-height: 1.55; padding-left: 1.1em; margin: .4rem 0 0; }
+.src li { margin: 3px 0; }
+.note { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="bi-tip" id="tip"></div>
+<article class="article">
+
+  <header>
+    <p class="eyebrow">Lapse modelling · a worked case study</p>
+    <h1>Predicting and preventing policy lapse in the Japanese life market</h1>
+    <p class="lead">Japan's life-insurance market has stopped growing. Almost nine in ten households are already
+      covered, the population is shrinking, and for an insurer like MetLife Japan the value of the business now sits in
+      the policies it already holds rather than in the few it can still sell. This is a worked example of how I would
+      approach that as a data scientist: rank the in-force book by the chance each policy lapses in the next twelve
+      months, work out what is driving that risk, group policyholders into segments a retention team can act on, and put
+      a defensible number on what intervening is worth.</p>
+    <p>Everything below was built end to end in Python with scikit-learn, and every chart is a live output of the fitted
+      model, not a mock-up. I have tried to be honest about where the evidence is strong and where it is not.</p>
+    <p class="honesty">One caveat up front. The market figures in the next section are real and sourced. The
+      policyholder-level book is <b>synthetic</b>: 60,000 policies I generated so the page can show a full, reproducible
+      pipeline without using anyone's data. Its lapse drivers follow the directions reported in the actuarial
+      literature, so the patterns are realistic, but the headline accuracy reflects how well the model recovers a
+      process I designed, not how it would score on MetLife's real book. I flag this again where it matters.</p>
+  </header>
+
+  <!-- 1. MARKET ------------------------------------------------------------>
+  <section class="sec">
+    <h2><span class="n">1</span>Why retention is the lever</h2>
+    <p class="sec-meta">Japan life insurance, FY2023</p>
+    <p>The Japanese life market is large and mature. Industry premium income reached ¥37.52 trillion in FY2023, and the
+      number of individual policies in force has risen for sixteen straight years. But that growth is shallow: 89% of
+      two-or-more-person households already hold cover, the population has been shrinking for over a decade, and the
+      birth rate is at a record low. When the pool of new customers is this thin, the economics shift. Each year roughly
+      5.9% of in-force benefits lapse or surrender, and every policy that walks out the door takes future premium and
+      embedded value with it. Keeping the book is no longer a back-office concern; it is the main way the business
+      grows.</p>
+    <div class="bi-kpi-row" id="macroKpis"></div>
+    <div class="split">
+      <figure class="fig">
+        <div class="cap-h">Individual policies in force (millions)</div>
+        <div class="chart" id="cPolicies" style="height:240px"></div>
+        <figcaption>Sixteen years of slow growth that is now flattening. Source: LIAJ Fact Book 2024.</figcaption>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">The demographic backdrop</div>
+        <table class="bi-table" style="margin-top:.4rem"><tbody id="demoRows"></tbody></table>
+        <figcaption>An ageing, depopulating market pushes demand from death benefit toward medical, cancer and annuity
+          cover, and makes the existing book disproportionately valuable.</figcaption>
+      </figure>
+    </div>
+    <p>This is also where MetLife competes. MetLife Insurance K.K. has been in Japan since 1973 (originally as Alico, the
+      first foreign life insurer in the country) and is strong in foreign-currency whole-life and annuity products sold
+      through tied agents and bancassurance. Those are exactly the segments where affordability-driven and rate-driven
+      lapse bites hardest, so a retention model is not an abstract exercise for them. The question becomes concrete:
+      which policies are about to leave, and why?</p>
+  </section>
+
+  <!-- 2. MODEL -------------------------------------------------------------->
+  <section class="sec">
+    <h2><span class="n">2</span>A model for who lapses, and why</h2>
+    <p class="sec-meta">Gradient boosting vs a logistic challenger · 60,000 policyholders</p>
+    <p>I framed lapse as a binary prediction: for each in-force policy, what is the probability it terminates within the
+      next twelve months? I trained a gradient-boosted tree model (<span class="bi-mono">HistGradientBoostingClassifier</span>)
+      and, deliberately, a plain <span class="bi-mono">LogisticRegression</span> alongside it as a simpler, more
+      interpretable challenger. Both were evaluated with 5-fold stratified cross-validation rather than a single lucky
+      split.</p>
+    <p>The honest result is that they tie. The boosted model averages 0.793 ± 0.009 AUC across folds; the logistic model
+      averages 0.788 ± 0.009. That difference is not statistically separable. The engineered non-linear interactions buy almost nothing here,
+      which is a useful finding in itself: for a regulated insurer, a transparent GLM that performs as well as a black
+      box is the one you would actually ship.</p>
+    <p class="honesty"><b>How to read the accuracy.</b> Because the labels come from a synthetic process I designed, this
+      AUC measures how well the model recovers <i>that</i> process, not real-world lapse skill. On a real book, expect
+      lower. The value on this page is the pipeline and the framing, not the headline number.</p>
+    <div class="bi-kpi-row" id="modelKpis"></div>
+    <figure class="fig">
+      <div class="cap-h">What drives lapse</div>
+      <div class="chart" id="cImp" style="height:340px"></div>
+      <figcaption>Permutation importance (drop in AUC when a feature is shuffled). Error bars are ±1 standard deviation
+        over 30 repeats.</figcaption>
+    </figure>
+    <p>The drivers line up with the actuarial literature, and crucially none of the top ones are demographics you cannot
+      change. They are operational signals a retention team can act on:</p>
+    <ul class="flow" id="driverNotes"></ul>
+    <p>To avoid relying on a single attribution method, I also computed SHAP values, which decompose each prediction into
+      per-feature contributions. The two methods agree on the cast of important features even if they rank them slightly
+      differently, and SHAP has the advantage of explaining individual policies, not just the model as a whole.</p>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">SHAP: global attribution</div>
+        <div class="chart" id="cShapG" style="height:300px"></div>
+        <figcaption>Mean absolute SHAP value per feature. Broadly agrees with permutation importance on which features
+          matter; the ordering differs (SHAP leads with channel, permutation with tenure).</figcaption>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">SHAP: one policyholder explained</div>
+        <div class="chart" id="cShapL" style="height:300px"></div>
+        <figcaption id="shapLocalNote"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 3. PERFORMANCE -------------------------------------------------------->
+  <section class="sec">
+    <h2><span class="n">3</span>Does it rank, and is it calibrated?</h2>
+    <p class="sec-meta">Held-out test set</p>
+    <p>A retention model has to do two different jobs. It has to <b>rank</b> policies so that outreach goes to the ones
+      most likely to leave, and its probabilities have to be <b>calibrated</b> so that "12% risk" really means about
+      twelve in a hundred. Ranking pays for the campaign; calibration is what lets you trust the business case later.</p>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">ROC curve</div>
+        <div class="chart" id="cRoc" style="height:300px"></div>
+        <figcaption>Single-split test AUC 0.803 (boosted) vs 0.801 (logistic). The 5-fold figure above
+          is the one to trust; the two models essentially overlap.</figcaption>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">Calibration</div>
+        <div class="chart" id="cCal" style="height:300px"></div>
+        <figcaption>Predicted vs observed lapse by decile. Points sit close to the diagonal (Brier 0.057), so the
+          probabilities can be used as probabilities, not just as a ranking.</figcaption>
+      </figure>
+    </div>
+    <p>Because the scores rank well, risk is concentrated. Contacting the riskiest 20% of the book reaches 64% of all
+      the lapses that are going to happen, with a top-decile lift of 4.65x over contacting people at random. That
+      concentration is what makes targeted outreach economic instead of spraying the whole book.</p>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">Gains: lapses captured by depth of outreach</div>
+        <div class="chart" id="cGains" style="height:280px"></div>
+        <figcaption>Cumulative share of lapses reached as you contact more of the book in risk order. The shaded band is
+          the top 20%.</figcaption>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">Lapse rate by policy duration</div>
+        <div class="chart" id="cSurv" style="height:280px"></div>
+        <figcaption>Lapse is really a time-to-event problem, best modelled as a discrete-time hazard or a Cox fit in
+          production. This book only records a forward 12-month flag, so rather than fake a cohort survival curve I show
+          the well-defined object: 12-month lapse rate by current duration, front-loaded at 23% in year one. That
+          shape is what motivates the 13- and 25-month persistency milestones the industry tracks.</figcaption>
+      </figure>
+    </div>
+    <p class="tbl-cap">Risk decile detail</p>
+    <table class="bi-table">
+      <thead><tr><th>Decile</th><th class="num">Policyholders</th><th class="num">Avg. predicted risk</th>
+      <th class="num">Actual lapse rate</th><th class="num">Lift vs base</th><th class="num">Cum. lapses captured</th></tr></thead>
+      <tbody id="liftRows"></tbody>
+    </table>
+  </section>
+
+  <!-- 4. SEGMENTATION ------------------------------------------------------->
+  <section class="sec">
+    <h2><span class="n">4</span>Who are they? Segmenting the book</h2>
+    <p class="sec-meta">k-means · 5 behavioural segments</p>
+    <p>Ranking tells you <i>who</i> to call first. Segmentation tells you <i>what to say</i>. Grouping policyholders by
+      value and behaviour turns one model score into a handful of strategies a retention team can brief against. I used
+      k-means and chose five segments for actionability, one play each. I am not pretending these are clean natural
+      clusters: the silhouette score at k=5 is modest (0.16) and the segments overlap, so they are management
+      lenses, not hard partitions. The pattern that matters survives that caveat.</p>
+    <div class="split">
+      <figure class="fig">
+        <div class="cap-h">Value vs risk</div>
+        <div class="chart" id="cSeg" style="height:360px"></div>
+        <figcaption>Bubble size is segment size; the dashed line is the book-average lapse rate. The upper-right
+          quadrant is the strategic problem: the highest-value segment also churns above average, so lifetime value is
+          most exposed exactly where retention is weakest.</figcaption>
+      </figure>
+      <div class="bi-stack" id="segCards"></div>
+    </div>
+  </section>
+
+  <!-- 5. BUSINESS CASE ------------------------------------------------------>
+  <section class="sec">
+    <h2><span class="n">5</span>What is it worth?</h2>
+    <p class="sec-meta">Targeted retention programme · illustrative book of ~1.2M policies</p>
+    <p>A model only earns its keep if the intervention it enables pays for itself. The logic is simple to state: score
+      the book, target the riskiest two deciles, spend a fixed amount per policyholder on outreach and friction removal
+      (an auto-pay conversion, a flexible payment plan, a service call), and assume that effort cuts lapse among those
+      contacted by a modest relative amount. The value credited is only the lifetime value of the policies that would
+      actually have lapsed, not the average of everyone contacted, so the gain is not inflated by the roughly 80% of the
+      targeted group who were never going to leave.</p>
+    <ul class="flow" id="roiSteps"></ul>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">Value retained vs campaign cost (base case)</div>
+        <div class="chart" id="cRoi" style="height:230px"></div>
+        <div class="bi-kpi-row" id="roiKpis" style="margin-top:1.2rem"></div>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">Sensitivity: net benefit (¥B)</div>
+        <div class="chart" id="cSens" style="height:260px"></div>
+        <figcaption>The base case is one cell, not a promise. Net benefit turns negative below a lapse reduction of
+          11% (break-even, at the base ¥7,500 cost per policyholder). Green is positive, red is a loss.</figcaption>
+      </figure>
+    </div>
+    <p>The honest reading is that this programme is worth doing across a wide range of assumptions, but not all of them.
+      Presenting the sensitivity grid rather than a single ROI figure is the difference between a number a committee can
+      challenge and one it has to take on faith.</p>
+  </section>
+
+  <!-- 6. FAIRNESS ----------------------------------------------------------->
+  <section class="sec">
+    <h2><span class="n">6</span>Does the targeting treat groups fairly?</h2>
+    <p class="sec-meta">Selection rate and accuracy by age and income</p>
+    <p>A retention flag decides who gets attention and who is left alone, so it is worth checking whether it behaves
+      evenly across groups before anyone acts on it. I broke the flag down by age band and household income, comparing
+      the actual lapse rate, the rate at which each group is flagged, and the model's accuracy within the group.</p>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">By age band</div>
+        <table class="bi-table" style="margin-top:.4rem"><thead><tr><th>Age</th><th class="num">N</th>
+        <th class="num">Actual lapse</th><th class="num">Flagged rate</th><th class="num">AUC</th></tr></thead>
+        <tbody id="fairAge"></tbody></table>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">By household income</div>
+        <table class="bi-table" style="margin-top:.4rem"><thead><tr><th>Income</th><th class="num">N</th>
+        <th class="num">Actual lapse</th><th class="num">Flagged rate</th><th class="num">AUC</th></tr></thead>
+        <tbody id="fairInc"></tbody></table>
+      </figure>
+    </div>
+    <p class="note" id="fairNote"></p>
+  </section>
+
+  <!-- 7. DELIVERY ----------------------------------------------------------->
+  <section class="sec">
+    <h2><span class="n">7</span>How it would actually ship</h2>
+    <p class="sec-meta">Proposed production architecture, not yet built</p>
+    <p>Everything above runs on my laptop. Making it useful inside MetLife means putting it on a cadence and into the
+      hands of the people who talk to customers. I want to be clear about the line between what is built here and what is
+      a proposal: the SHAP explanations and the fairness audit above are implemented; the Azure and MLOps plumbing below
+      is how I would productionise it, not something I have stood up.</p>
+    <div class="fig-2">
+      <figure class="fig">
+        <div class="cap-h">Pipeline (proposed)</div>
+        <ul class="flow">
+          <li>Monthly scoring of the in-force book on Azure ML, with features drawn from policy, billing and servicing systems.</li>
+          <li>Per-policy SHAP (built here) surfaced to retention teams so they see <i>why</i> a policy is flagged.</li>
+          <li>Scores pushed to Power BI for agents and bancassurance partners; high risk crossed with high value triggers outreach.</li>
+          <li>CI/CD and MLOps: versioned data, drift monitoring, predicted-vs-actual lapse calibration tracked every cycle.</li>
+        </ul>
+      </figure>
+      <figure class="fig">
+        <div class="cap-h">Limits and honesty</div>
+        <ul class="flow">
+          <li>Servicing notes, complaints and agent feedback in Japan are in <b>Japanese</b>; real features need JP-language NLP.</li>
+          <li>Shock-driven lapses (job loss, illness, divorce) leave no advance signal and cap how much recall is ever possible.</li>
+          <li>The logistic GLM stays alongside the boosted model as an interpretable, regulator-friendly challenger.</li>
+          <li>The synthetic book validates the pipeline; the model would be re-fit and re-validated on real data before any decision.</li>
+        </ul>
+      </figure>
+    </div>
+  </section>
+
+  <!-- METHOD + SOURCES ------------------------------------------------------>
+  <section class="sec">
+    <h2>Method and sources</h2>
+    <p>60,000 synthetic policyholders were generated with a logistic lapse process whose coefficients encode the
+      published direction of each driver (early-duration hazard, premium-to-income, payment method and frequency,
+      channel, riders, complaints, servicing gap, age). Models:
+      <span class="bi-mono">HistGradientBoostingClassifier</span> versus a <span class="bi-mono">LogisticRegression</span>
+      challenger, compared by 5-fold stratified cross-validation; importances by permutation drop-in-AUC (30 repeats)
+      and <span class="bi-mono">SHAP</span>; segmentation via <span class="bi-mono">k-means</span> (silhouette-checked);
+      persistency from the empirical discrete-time hazard; lifetime value as the present value of profit margin
+      (illustrative, not a decrement-based embedded-value calculation). Fully reproducible from
+      <span class="bi-mono">build_model.py</span>.</p>
+    <ul class="src" id="srcRows"></ul>
+  </section>
+
+  <!-- AUTHOR / PUBLISH ------------------------------------------------------>
+  <footer class="author">
+    <p class="name">Santiago Martínez</p>
+    <p class="role">Data &amp; BI analyst. Prepared for a conversation with MetLife Japan.</p>
+    <p class="links">Portfolio <a href="https://santimuru.github.io">santimuru.github.io</a> &nbsp;·&nbsp;
+      GitHub <a href="https://github.com/santimuru">github.com/santimuru</a></p>
+    <p class="stack">Python · scikit-learn · ECharts. Policyholder data synthetic; market context cited above.</p>
+  </footer>
+
+</article>
+<script>
+const MODEL={"meta": {"n_policyholders": 60000, "data_nature": "Synthetic policyholder book generated for demonstration; lapse drivers and their direction follow published life-insurance actuarial evidence. Market-context figures are real and cited.", "book_scale_assumption": 1200000, "built": "2026-06-09"}, "headline": {"overall_lapse_rate": 0.0736, "auc": 0.8029, "auc_logistic": 0.8008, "brier": 0.0565, "auc_cv_mean": 0.7935, "auc_cv_std": 0.0089, "auc_log_cv_mean": 0.7882, "auc_log_cv_std": 0.0089, "gbm_gap": 0.0052, "gap_significant": false}, "roc": [{"fpr": 0.0, "tpr": 0.0}, {"fpr": 0.0013, "tpr": 0.0771}, {"fpr": 0.0027, "tpr": 0.1052}, {"fpr": 0.0051, "tpr": 0.1333}, {"fpr": 0.0068, "tpr": 0.1568}, {"fpr": 0.0092, "tpr": 0.1822}, {"fpr": 0.0122, "tpr": 0.2067}, {"fpr": 0.0155, "tpr": 0.2276}, {"fpr": 0.0189, "tpr": 0.252}, {"fpr": 0.0225, "tpr": 0.2729}, {"fpr": 0.026, "tpr": 0.2919}, {"fpr": 0.0289, "tpr": 0.3083}, {"fpr": 0.033, "tpr": 0.3237}, {"fpr": 0.0381, "tpr": 0.34}, {"fpr": 0.0419, "tpr": 0.3617}, {"fpr": 0.0458, "tpr": 0.3844}, {"fpr": 0.0492, "tpr": 0.4007}, {"fpr": 0.0544, "tpr": 0.418}, {"fpr": 0.0567, "tpr": 0.4352}, {"fpr": 0.0627, "tpr": 0.4506}, {"fpr": 0.0726, "tpr": 0.466}, {"fpr": 0.078, "tpr": 0.4805}, {"fpr": 0.0841, "tpr": 0.4977}, {"fpr": 0.0934, "tpr": 0.5122}, {"fpr": 0.1009, "tpr": 0.5295}, {"fpr": 0.107, "tpr": 0.5449}, {"fpr": 0.1144, "tpr": 0.5594}, {"fpr": 0.1193, "tpr": 0.5739}, {"fpr": 0.1318, "tpr": 0.5893}, {"fpr": 0.1385, "tpr": 0.6056}, {"fpr": 0.1513, "tpr": 0.6192}, {"fpr": 0.1623, "tpr": 0.6328}, {"fpr": 0.1757, "tpr": 0.6473}, {"fpr": 0.1882, "tpr": 0.6627}, {"fpr": 0.2075, "tpr": 0.6763}, {"fpr": 0.2249, "tpr": 0.6917}, {"fpr": 0.239, "tpr": 0.7063}, {"fpr": 0.2636, "tpr": 0.7208}, {"fpr": 0.2812, "tpr": 0.7344}, {"fpr": 0.2946, "tpr": 0.748}, {"fpr": 0.3181, "tpr": 0.7616}, {"fpr": 0.3409, "tpr": 0.7761}, {"fpr": 0.3701, "tpr": 0.7888}, {"fpr": 0.3927, "tpr": 0.8024}, {"fpr": 0.4184, "tpr": 0.816}, {"fpr": 0.4427, "tpr": 0.8305}, {"fpr": 0.4666, "tpr": 0.8432}, {"fpr": 0.5004, "tpr": 0.8586}, {"fpr": 0.5329, "tpr": 0.8722}, {"fpr": 0.549, "tpr": 0.883}, {"fpr": 0.598, "tpr": 0.8948}, {"fpr": 0.6334, "tpr": 0.9093}, {"fpr": 0.6617, "tpr": 0.922}, {"fpr": 0.6938, "tpr": 0.9347}, {"fpr": 0.7215, "tpr": 0.9474}, {"fpr": 0.7623, "tpr": 0.9574}, {"fpr": 0.8033, "tpr": 0.9683}, {"fpr": 0.8547, "tpr": 0.9773}, {"fpr": 0.9277, "tpr": 0.9882}, {"fpr": 1.0, "tpr": 1.0}], "lift": [{"decile": 1, "policyholders": 1500, "avg_risk": 0.3182, "actual_lapse_rate": 0.342, "lift": 4.65, "cum_capture": 0.4651}, {"decile": 2, "policyholders": 1500, "avg_risk": 0.1107, "actual_lapse_rate": 0.1253, "lift": 1.7, "cum_capture": 0.6355}, {"decile": 3, "policyholders": 1500, "avg_risk": 0.0722, "actual_lapse_rate": 0.0633, "lift": 0.86, "cum_capture": 0.7217}, {"decile": 4, "policyholders": 1500, "avg_risk": 0.0558, "actual_lapse_rate": 0.048, "lift": 0.65, "cum_capture": 0.7869}, {"decile": 5, "policyholders": 1500, "avg_risk": 0.0459, "actual_lapse_rate": 0.0433, "lift": 0.59, "cum_capture": 0.8459}, {"decile": 6, "policyholders": 1500, "avg_risk": 0.0383, "actual_lapse_rate": 0.032, "lift": 0.44, "cum_capture": 0.8894}, {"decile": 7, "policyholders": 1500, "avg_risk": 0.0322, "actual_lapse_rate": 0.03, "lift": 0.41, "cum_capture": 0.9302}, {"decile": 8, "policyholders": 1500, "avg_risk": 0.027, "actual_lapse_rate": 0.0253, "lift": 0.34, "cum_capture": 0.9646}, {"decile": 9, "policyholders": 1500, "avg_risk": 0.0221, "actual_lapse_rate": 0.0133, "lift": 0.18, "cum_capture": 0.9828}, {"decile": 10, "policyholders": 1500, "avg_risk": 0.016, "actual_lapse_rate": 0.0127, "lift": 0.17, "cum_capture": 1.0}], "reliability": [{"pred": 0.3182, "obs": 0.342}, {"pred": 0.1107, "obs": 0.1253}, {"pred": 0.0722, "obs": 0.0633}, {"pred": 0.0558, "obs": 0.048}, {"pred": 0.0459, "obs": 0.0433}, {"pred": 0.0383, "obs": 0.032}, {"pred": 0.0322, "obs": 0.03}, {"pred": 0.027, "obs": 0.0253}, {"pred": 0.0221, "obs": 0.0133}, {"pred": 0.016, "obs": 0.0127}], "importance": [{"feature": "Policy tenure (years)", "importance": 0.0721, "std": 0.0059, "pct": 100.0, "std_pct": 8.2}, {"feature": "Payment method", "importance": 0.0617, "std": 0.0035, "pct": 85.6, "std_pct": 4.9}, {"feature": "Distribution channel", "importance": 0.0392, "std": 0.0044, "pct": 54.4, "std_pct": 6.1}, {"feature": "Recent complaint", "importance": 0.0359, "std": 0.0031, "pct": 49.8, "std_pct": 4.3}, {"feature": "Digital engagement", "importance": 0.0125, "std": 0.0022, "pct": 17.3, "std_pct": 3.1}, {"feature": "Product line", "importance": 0.0105, "std": 0.003, "pct": 14.6, "std_pct": 4.2}, {"feature": "Months since last servicing", "importance": 0.0079, "std": 0.002, "pct": 11.0, "std_pct": 2.8}, {"feature": "Premium-to-income ratio", "importance": 0.0058, "std": 0.0017, "pct": 8.0, "std_pct": 2.4}, {"feature": "Number of riders", "importance": 0.0042, "std": 0.0012, "pct": 5.8, "std_pct": 1.7}, {"feature": "Billing frequency", "importance": 0.0026, "std": 0.0016, "pct": 3.6, "std_pct": 2.2}], "shap_global": [{"feature": "Distribution channel", "mean_abs": 0.3631, "pct": 100.0}, {"feature": "Policy tenure (years)", "mean_abs": 0.3118, "pct": 85.9}, {"feature": "Product line", "mean_abs": 0.3016, "pct": 83.1}, {"feature": "Payment method", "mean_abs": 0.2808, "pct": 77.3}, {"feature": "Digital engagement", "mean_abs": 0.1561, "pct": 43.0}, {"feature": "Recent complaint", "mean_abs": 0.1534, "pct": 42.2}, {"feature": "Months since last servicing", "mean_abs": 0.1168, "pct": 32.2}, {"feature": "Policyholder age", "mean_abs": 0.1018, "pct": 28.0}, {"feature": "Number of riders", "mean_abs": 0.0797, "pct": 21.9}, {"feature": "Premium-to-income ratio", "mean_abs": 0.0732, "pct": 20.2}], "shap_local": {"risk": 0.8411, "base": -2.95, "contributions": [{"feature": "Recent complaint", "value": 2.4599}, {"feature": "Months since last servicing", "value": 1.1539}, {"feature": "Digital engagement", "value": 0.2935}, {"feature": "Distribution channel = Tied agent (face-to-face)", "value": 0.2514}, {"feature": "Distribution channel = Direct / online", "value": 0.2131}, {"feature": "Payment method = Credit card", "value": 0.1491}, {"feature": "Product line = Medical / cancer (A&H)", "value": 0.1276}, {"feature": "Billing frequency", "value": 0.0977}]}, "segments": [{"id": 3, "size": 9682, "share": 0.1614, "lapse_rate": 0.096, "avg_age": 52.2, "avg_tenure": 5.9, "avg_premium": 738134, "avg_prem_to_income": 0.1672, "avg_digital": 49.6, "avg_clv": 799492, "top_product": "Foreign-currency whole life", "top_channel": "Tied agent (face-to-face)", "name": "High-value, at-risk", "play": "Largest lifetime value AND above-average churn, mostly FX whole-life with stretched premium-to-income. The #1 retention priority: most value at stake per save."}, {"id": 0, "size": 7697, "share": 0.1283, "lapse_rate": 0.1048, "avg_age": 51.8, "avg_tenure": 5.6, "avg_premium": 237039, "avg_prem_to_income": 0.0445, "avg_digital": 49.3, "avg_clv": 243385, "top_product": "Medical / cancer (A&H)", "top_channel": "Tied agent (face-to-face)", "name": "Affordability-stressed", "play": "Highest churn of the book: early-duration policies under payment pressure. Proactive save via auto-pay conversion, flexible payment, premium-holiday offers."}, {"id": 1, "size": 17718, "share": 0.2953, "lapse_rate": 0.0632, "avg_age": 42.2, "avg_tenure": 4.9, "avg_premium": 202291, "avg_prem_to_income": 0.038, "avg_digital": 66.8, "avg_clv": 216555, "top_product": "Medical / cancer (A&H)", "top_channel": "Tied agent (face-to-face)", "name": "Digital self-servers", "play": "Younger, engaged online, lower-touch. Retain cheaply via app nudges, e-statements and digital renewal flows."}, {"id": 2, "size": 17119, "share": 0.2853, "lapse_rate": 0.0733, "avg_age": 62.5, "avg_tenure": 4.9, "avg_premium": 202205, "avg_prem_to_income": 0.0379, "avg_digital": 31.2, "avg_clv": 193970, "top_product": "Medical / cancer (A&H)", "top_channel": "Tied agent (face-to-face)", "name": "Mature stable core", "play": "Older, sticky book. Retirement, long-term-care and legacy products; preserve persistency, avoid over-contact."}, {"id": 4, "size": 7784, "share": 0.1297, "lapse_rate": 0.0388, "avg_age": 52.0, "avg_tenure": 14.6, "avg_premium": 243585, "avg_prem_to_income": 0.0462, "avg_digital": 50.3, "avg_clv": 115582, "top_product": "Medical / cancer (A&H)", "top_channel": "Tied agent (face-to-face)", "name": "Loyal low-touch core", "play": "Lowest churn, modest value. Keep cost-to-serve low; deepen with medical/cancer riders to lift lifetime value over time."}], "silhouette": [{"k": 2, "silhouette": 0.2222}, {"k": 3, "silhouette": 0.152}, {"k": 4, "silhouette": 0.1534}, {"k": 5, "silhouette": 0.1557}, {"k": 6, "silhouette": 0.1544}, {"k": 7, "silhouette": 0.1492}], "fairness": {"by_age": [{"group": "<40", "n": 3016, "lapse": 0.0799, "flagged_rate": 0.2132, "auc": 0.8003}, {"group": "40-54", "n": 5934, "lapse": 0.0753, "flagged_rate": 0.2108, "auc": 0.8155}, {"group": "55-69", "n": 4633, "lapse": 0.0693, "flagged_rate": 0.1807, "auc": 0.7952}, {"group": "70+", "n": 1417, "lapse": 0.0663, "flagged_rate": 0.1898, "auc": 0.7772}], "by_income": [{"group": "Lower third", "n": 5000, "lapse": 0.078, "flagged_rate": 0.2288, "auc": 0.8185}, {"group": "Middle third", "n": 5000, "lapse": 0.0734, "flagged_rate": 0.1956, "auc": 0.8143}, {"group": "Upper third", "n": 5000, "lapse": 0.0692, "flagged_rate": 0.1756, "auc": 0.7759}], "auc_spread": 0.0426, "flag_spread": 0.0532, "note": "Flagged = top-20% risk score (the targeting cut). Ranking quality is broadly comparable (AUC 0.78-0.82), but it is NOT identical: the 70+ and upper-income groups score a few points lower, and the lower-income third is flagged more often (23%) than the upper third (18%). That tracks genuine risk, but the gap is real; in production it would warrant a documented fairness review and possibly group-aware thresholds, not a clean bill of health."}, "duration_profile": {"hazard": [{"t": 0, "h": 0.2329}, {"t": 1, "h": 0.159}, {"t": 2, "h": 0.0794}, {"t": 3, "h": 0.0649}, {"t": 4, "h": 0.0599}, {"t": 5, "h": 0.0522}, {"t": 6, "h": 0.0562}, {"t": 7, "h": 0.0499}, {"t": 8, "h": 0.059}, {"t": 9, "h": 0.0771}, {"t": 10, "h": 0.0686}, {"t": 11, "h": 0.05}, {"t": 12, "h": 0.0308}, {"t": 13, "h": 0.0387}, {"t": 14, "h": 0.0233}, {"t": 15, "h": 0.031}, {"t": 16, "h": 0.0376}, {"t": 17, "h": 0.046}, {"t": 18, "h": 0.0334}, {"t": 19, "h": 0.0268}, {"t": 20, "h": 0.0583}]}, "roi": {"targeted_policyholders": 240000, "expected_lapsers_in_target": 56080, "assumed_relative_uplift": 0.2, "assumed_cost_per_policyholder_jpy": 7500, "saved_policies": 11216, "avg_clv_jpy": 296025, "value_retained_jpy": 3320221153, "campaign_cost_jpy": 1800000000, "net_benefit_jpy": 1520221153, "roi_x": 1.8, "capture_top2_deciles": 0.6355, "breakeven_uplift": 0.1084}, "roi_sensitivity": {"uplift": [0.05, 0.1, 0.15, 0.2, 0.25], "cost": [5000, 7500, 10000, 15000, 20000], "net_billions": [[-0.37, -0.97, -1.57, -2.77, -3.97], [0.46, -0.14, -0.74, -1.94, -3.14], [1.29, 0.69, 0.09, -1.11, -2.31], [2.12, 1.52, 0.92, -0.28, -1.48], [2.95, 2.35, 1.75, 0.55, -0.65]]}};const MACRO={"kpis": [{"label": "Industry premium income", "value": "¥37.52T", "sub": "FY2023, +8.8% y/y (LIAJ)"}, {"label": "Individual policies in force", "value": "194.9M", "sub": "16th straight year up (LIAJ)"}, {"label": "Household coverage", "value": "89.2%", "sub": "2+ person households (JILI 2024)"}, {"label": "Lapse & surrender ratio", "value": "5.9%", "sub": "of in-force benefits, FY2023 (LIAJ)"}, {"label": "Population aged 65+", "value": "29.3%", "sub": "Sept 2024, world's highest (MIC)"}], "policies_series": [{"year": "FY19", "v": 187.48}, {"year": "FY20", "v": 190.24}, {"year": "FY21", "v": 193.01}, {"year": "FY22", "v": 194.58}, {"year": "FY23", "v": 194.94}], "demographics": [["Total fertility rate", "1.20", "Record low, 2023 (MHLW)"], ["Population trend", "13 yrs down", "123.4M, from 128.5M peak (MIC)"], ["65+ share by 2040", "34.8%", "Projected (OECD, 2024)"], ["Avg household death benefit", "¥19.36M", "Down from ¥20.27M in 2021 (JILI)"]], "sources": ["Life Insurance Association of Japan (LIAJ). Life Insurance Fact Book 2024 (FY2023)", "Japan Institute of Life Insurance (JILI). Nationwide Survey 2024", "Statistics Bureau of Japan / MIC. Population estimates, Sept 2024", "OECD. Addressing Demographic Headwinds in Japan (2024)", "LIMRA / SOA. U.S. Individual Life Persistency studies (lapse-curve benchmarks)"]};const PAL={"accent": "#3b6fd4", "accentSoft": "#e8eefb", "pos": "#2e9e6b", "warn": "#caa23a", "neg": "#d15a4d", "text": "#2a2e37", "text2": "#565c69", "muted": "#8b919d", "border": "#e4e7ed", "surface": "#fbfcfd", "grid": "#eceff3"};const SEGC=["#3b6fd4", "#d15a4d", "#2e9e6b", "#7a5ccb", "#caa23a"];
+</script>
+<script src="app.js"></script>
+</body>
+</html>
