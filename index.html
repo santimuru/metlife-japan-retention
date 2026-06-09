@@ -298,25 +298,25 @@ a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-under
 body { background:#fff; }
 /* ONE column: text and every figure/table share the exact same width, centered on the page.
    No "text cut short while charts run wide" mismatch. */
-.article { max-width: 820px; margin: 0 auto; padding: var(--space-12) var(--space-8) var(--space-16); }
+.article { max-width: 780px; margin: 0 auto; padding: var(--space-12) var(--space-8) var(--space-16); }
 
 /* type scale: one body size, one small (caption) size, deliberate headings */
-.article p { font-size: 1.0625rem; line-height: 1.72; color: var(--text); margin: 0 0 1.15rem; }
-.article h1 { font-size: 2.05rem; line-height: 1.16; font-weight: 700; letter-spacing: -.015em;
-  color: var(--text); margin: 0 0 1rem; }
-.article .lead { font-size: 1.2rem; line-height: 1.62; color: var(--text-2); margin: 0 0 1.6rem; font-weight: 400; }
-.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
-  font-weight: 600; margin: 0 0 1rem; }
+.article p { font-size: .9375rem; line-height: 1.65; color: var(--text); margin: 0 0 1rem; }
+.article h1 { font-size: 1.75rem; line-height: 1.18; font-weight: 700; letter-spacing: -.015em;
+  color: var(--text); margin: 0 0 .85rem; }
+.article .lead { font-size: 1.02rem; line-height: 1.58; color: var(--text-2); margin: 0 0 1.3rem; font-weight: 400; }
+.eyebrow { font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  font-weight: 600; margin: 0 0 .9rem; }
 
-.sec { margin-top: 3.4rem; padding-top: 1.8rem; border-top: 1px solid var(--border); }
-.sec > h2 { font-size: 1.4rem; font-weight: 600; letter-spacing: -.01em; color: var(--text); margin: 0 0 .3rem; }
+.sec { margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid var(--border); }
+.sec > h2 { font-size: 1.22rem; font-weight: 600; letter-spacing: -.01em; color: var(--text); margin: 0 0 .3rem; }
 .sec > h2 .n { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: .55ch; font-weight: 700; }
-.sec-meta { font-size: .85rem; color: var(--muted); margin: 0 0 1.5rem; }
+.sec-meta { font-size: .8rem; color: var(--muted); margin: 0 0 1.3rem; }
 
 /* figures: no box, just chart + caption */
-figure.fig { margin: 1.7rem 0; }
-figure.fig .cap-h { font-size: .95rem; font-weight: 600; color: var(--text); margin: 0 0 .15rem; }
-figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.55; margin-top: .55rem; }
+figure.fig { margin: 1.5rem 0; }
+figure.fig .cap-h { font-size: .875rem; font-weight: 600; color: var(--text); margin: 0 0 .15rem; }
+figure.fig figcaption { font-size: .8rem; color: var(--muted); line-height: 1.5; margin-top: .5rem; }
 .chart { width: 100%; }
 .fig-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 1.8rem; margin: 1.7rem 0; align-items: start; }
 .fig-2 figure.fig { margin: 0; }
@@ -324,15 +324,15 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
 @media (max-width: 720px) { .fig-2, .split { grid-template-columns: 1fr; } }
 
 /* stat band: borderless KPI strip, hairline top/bottom (no individual boxes) */
-.bi-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 1.4rem 1.2rem;
+.bi-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(116px, 1fr)); gap: 1.4rem 1rem;
   margin: 1.7rem 0; padding: 1.2rem .2rem; background: none !important; border: none !important;
   border-top: 1px solid var(--border) !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; }
 .bi-kpi { background: none !important; border: none !important; box-shadow: none !important; padding: 0 !important;
   display: flex; flex-direction: column; gap: 3px; }
 #roiKpis { grid-template-columns: repeat(2, 1fr) !important; }  /* half-width figure: clean 2x2, no orphan */
-.bi-kpi-label { font-size: .78rem; color: var(--muted); font-weight: 500; }
-.bi-kpi-value { font-size: 1.5rem; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -.01em; }
-.bi-kpi-sub { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+.bi-kpi-label { font-size: .74rem; color: var(--muted); font-weight: 500; }
+.bi-kpi-value { font-size: 1.32rem; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -.01em; }
+.bi-kpi-sub { font-size: .72rem; color: var(--muted); line-height: 1.4; }
 
 /* honesty note: quiet, ruled, not a coloured chip */
 .honesty { border-left: 2px solid var(--accent); padding: .1rem 0 .1rem 1.1rem; margin: 1.5rem 0;
@@ -340,13 +340,13 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
 .honesty b { color: var(--text); }
 
 /* lists read at body weight, not tiny grey */
-.article ul.flow { margin: .6rem 0 1.2rem; padding-left: 1.2em; }
-.article ul.flow li { font-size: 1.02rem; line-height: 1.6; color: var(--text); margin: .45rem 0; }
+.article ul.flow { margin: .5rem 0 1rem; padding-left: 1.2em; }
+.article ul.flow li { font-size: .9375rem; line-height: 1.55; color: var(--text); margin: .4rem 0; }
 .article ul.flow li b { font-weight: 600; }
 
 /* tables: keep, give them a caption + breathing room */
-.tbl-cap { font-size: .95rem; font-weight: 600; color: var(--text); margin: 1.7rem 0 .5rem; }
-.bi-table { font-size: .92rem; }
+.tbl-cap { font-size: .875rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 .5rem; }
+.bi-table { font-size: .86rem; }
 .sec > table.bi-table { max-width: 100%; }
 #fairAge, #fairInc { width: 100%; }
 #fairAge td:first-child, #fairInc td:first-child { white-space: nowrap; }
@@ -356,10 +356,10 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
 .seg-card.bi-card { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 1.6rem; row-gap: .5rem;
   background: none; border: none; border-top: 1px solid var(--border); border-radius: 0; box-shadow: none; padding: 1.1rem 0; }
 .seg-card.bi-card:first-child { border-top: none; padding-top: .2rem; }
-.seg-card > h3 { grid-column: 1 / -1; font-size: .98rem; font-weight: 600; gap: .5rem; margin: 0; }
-.seg-card > .seg-stat { display: flex; justify-content: space-between; gap: .6rem; font-size: .86rem; }
+.seg-card > h3 { grid-column: 1 / -1; font-size: .9rem; font-weight: 600; gap: .5rem; margin: 0; }
+.seg-card > .seg-stat { display: flex; justify-content: space-between; gap: .6rem; font-size: .8rem; }
 .seg-card .seg-stat .k { color: var(--muted); }
-.seg-card > .note { grid-column: 1 / -1; font-size: .9rem !important; line-height: 1.5;
+.seg-card > .note { grid-column: 1 / -1; font-size: .84rem !important; line-height: 1.5;
   color: var(--text-2) !important; margin: .15rem 0 0; }
 @media (max-width: 560px) { .seg-card.bi-card { grid-template-columns: 1fr; } }
 .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: 0 0 auto; }
@@ -384,12 +384,12 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
   <header>
     <p class="eyebrow">Lapse modelling · a worked case study</p>
     <h1>Predicting and preventing policy lapse in the Japanese life market</h1>
-    <p class="lead">Japan's life-insurance market has stopped growing. Almost nine in ten households are already
+    <p class="lead">Japan's life-insurance market has <b>stopped growing</b>. Almost nine in ten households are already
       covered, the population is shrinking, and for an insurer like MetLife Japan the value of the business now sits in
-      the policies it already holds rather than in the few it can still sell. This is a worked example of how I would
-      approach that as a data scientist: rank the in-force book by the chance each policy lapses in the next twelve
-      months, work out what is driving that risk, group policyholders into segments a retention team can act on, and put
-      a defensible number on what intervening is worth.</p>
+      <b>the policies it already holds</b> rather than in the few it can still sell. This is a worked example of how I
+      would approach that as a data scientist: <b>rank</b> the in-force book by the chance each policy lapses in the next
+      twelve months, work out <b>what is driving</b> that risk, <b>segment</b> policyholders into groups a retention team
+      can act on, and put a <b>defensible number</b> on what intervening is worth.</p>
     <p>Everything below was built end to end in Python with scikit-learn, and every chart is a live output of the fitted
       model, not a mock-up. I have tried to be honest about where the evidence is strong and where it is not.</p>
     <p class="honesty">One caveat up front. The market figures in the next section are real and sourced. The
@@ -403,13 +403,13 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
   <section class="sec">
     <h2><span class="n">1</span>Why retention is the lever</h2>
     <p class="sec-meta">Japan life insurance, FY2023</p>
-    <p>The Japanese life market is large and mature. Industry premium income reached ¥37.52 trillion in FY2023, and the
-      number of individual policies in force has risen for sixteen straight years. But that growth is shallow: 89% of
-      two-or-more-person households already hold cover, the population has been shrinking for over a decade, and the
-      birth rate is at a record low. When the pool of new customers is this thin, the economics shift. Each year roughly
-      5.9% of in-force benefits lapse or surrender, and every policy that walks out the door takes future premium and
-      embedded value with it. Keeping the book is no longer a back-office concern; it is the main way the business
-      grows.</p>
+    <p>The Japanese life market is large and mature. Industry premium income reached <b>¥37.52 trillion</b> in FY2023,
+      and the number of individual policies in force has risen for sixteen straight years. But that growth is shallow:
+      <b>89% of households already hold cover</b>, the population has been shrinking for over a decade, and the birth
+      rate is at a record low. When the pool of new customers is this thin, the economics shift. Each year roughly
+      <b>5.9% of in-force benefits lapse or surrender</b>, and every policy that walks out the door takes future premium
+      and embedded value with it. <b>Keeping the book is no longer a back-office concern; it is the main way the business
+      grows.</b></p>
     <div class="bi-kpi-row" id="macroKpis"></div>
     <div class="split">
       <figure class="fig">
@@ -426,9 +426,9 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
     </div>
     <p>This is also where MetLife competes. MetLife Insurance K.K. has been in Japan since 1973 (originally as Alico, the
       first foreign life insurer in the country) and is strong in foreign-currency whole-life and annuity products sold
-      through tied agents and bancassurance. Those are exactly the segments where affordability-driven and rate-driven
-      lapse bites hardest, so a retention model is not an abstract exercise for them. The question becomes concrete:
-      which policies are about to leave, and why?</p>
+      through tied agents and bancassurance. Those are <b>exactly the segments where affordability-driven and
+      rate-driven lapse bites hardest</b>, so a retention model is not an abstract exercise for them. The question
+      becomes concrete: <b>which policies are about to leave, and why?</b></p>
   </section>
 
   <!-- 2. MODEL -------------------------------------------------------------->
@@ -440,10 +440,10 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
       and, deliberately, a plain <span class="bi-mono">LogisticRegression</span> alongside it as a simpler, more
       interpretable challenger. Both were evaluated with 5-fold stratified cross-validation rather than a single lucky
       split.</p>
-    <p>The honest result is that they tie. The boosted model averages 0.793 ± 0.009 AUC across folds; the logistic model
-      averages 0.788 ± 0.009. That difference is not statistically separable. The engineered non-linear interactions buy almost nothing here,
-      which is a useful finding in itself: for a regulated insurer, a transparent GLM that performs as well as a black
-      box is the one you would actually ship.</p>
+    <p>The honest result is that <b>they tie</b>. The boosted model averages <b>0.793 ± 0.009</b> AUC across folds; the
+      logistic model averages <b>0.788 ± 0.009</b>. That difference is not statistically separable. The engineered non-linear interactions buy
+      almost nothing here, which is a useful finding in itself: for a regulated insurer, <b>a transparent GLM that
+      performs as well as a black box is the one you would actually ship.</b></p>
     <p class="honesty"><b>How to read the accuracy.</b> Because the labels come from a synthetic process I designed, this
       AUC measures how well the model recovers <i>that</i> process, not real-world lapse skill. On a real book, expect
       lower. The value on this page is the pipeline and the framing, not the headline number.</p>
@@ -454,12 +454,13 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
       <figcaption>Permutation importance (drop in AUC when a feature is shuffled). Error bars are ±1 standard deviation
         over 30 repeats.</figcaption>
     </figure>
-    <p>The drivers line up with the actuarial literature, and crucially none of the top ones are demographics you cannot
-      change. They are operational signals a retention team can act on:</p>
+    <p>The drivers line up with the actuarial literature, and crucially <b>none of the top ones are demographics you
+      cannot change</b>. They are <b>operational signals</b> a retention team can act on:</p>
     <ul class="flow" id="driverNotes"></ul>
-    <p>To avoid relying on a single attribution method, I also computed SHAP values, which decompose each prediction into
-      per-feature contributions. The two methods agree on the cast of important features even if they rank them slightly
-      differently, and SHAP has the advantage of explaining individual policies, not just the model as a whole.</p>
+    <p>To avoid relying on a single attribution method, I also computed <b>SHAP values</b>, which decompose each
+      prediction into per-feature contributions. The two methods agree on the cast of important features even if they
+      rank them slightly differently, and SHAP has the advantage of <b>explaining individual policies</b>, not just the
+      model as a whole.</p>
     <div class="fig-2">
       <figure class="fig">
         <div class="cap-h">SHAP: global attribution</div>
@@ -496,9 +497,10 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
           probabilities can be used as probabilities, not just as a ranking.</figcaption>
       </figure>
     </div>
-    <p>Because the scores rank well, risk is concentrated. Contacting the riskiest 20% of the book reaches 64% of all
-      the lapses that are going to happen, with a top-decile lift of 4.65× over contacting people at random. That
-      concentration is what makes targeted outreach economic instead of spraying the whole book.</p>
+    <p>Because the scores rank well, <b>risk is concentrated</b>. Contacting the riskiest <b>20%</b> of the book reaches
+      <b>64% of all the lapses</b> that are going to happen, with a top-decile lift of <b>4.65×</b> over
+      contacting people at random. That concentration is what makes targeted outreach economic instead of spraying the
+      whole book.</p>
     <div class="fig-2">
       <figure class="fig">
         <div class="cap-h">Gains: lapses captured by depth of outreach</div>
@@ -529,9 +531,9 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
     <p class="sec-meta">k-means · 5 behavioural segments</p>
     <p>Ranking tells you <i>who</i> to call first. Segmentation tells you <i>what to say</i>. Grouping policyholders by
       value and behaviour turns one model score into a handful of strategies a retention team can brief against. I used
-      k-means and chose five segments for actionability, one play each. I am not pretending these are clean natural
-      clusters: the silhouette score at k=5 is modest (0.16) and the segments overlap, so they are management
-      lenses, not hard partitions. The pattern that matters survives that caveat.</p>
+      k-means and chose <b>five segments</b> for actionability, one play each. I am not pretending these are clean natural
+      clusters: the silhouette score at k=5 is modest (0.16) and the segments overlap, so they are <b>management
+      lenses, not hard partitions</b>. The pattern that matters survives that caveat.</p>
     <figure class="fig">
       <div class="cap-h">Value vs risk</div>
       <div class="chart" id="cSeg" style="height:460px"></div>
@@ -546,12 +548,12 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
   <section class="sec">
     <h2><span class="n">5</span>What is it worth?</h2>
     <p class="sec-meta">Targeted retention programme · illustrative book of ~1.2M policies</p>
-    <p>A model only earns its keep if the intervention it enables pays for itself. The logic is simple to state: score
-      the book, target the riskiest two deciles, spend a fixed amount per policyholder on outreach and friction removal
-      (an auto-pay conversion, a flexible payment plan, a service call), and assume that effort cuts lapse among those
-      contacted by a modest relative amount. The value credited is only the lifetime value of the policies that would
-      actually have lapsed, not the average of everyone contacted, so the gain is not inflated by the roughly 80% of the
-      targeted group who were never going to leave.</p>
+    <p>A model only earns its keep if the intervention it enables <b>pays for itself</b>. The logic is simple to state:
+      score the book, target the riskiest two deciles, spend a fixed amount per policyholder on outreach and friction
+      removal (an auto-pay conversion, a flexible payment plan, a service call), and assume that effort cuts lapse among
+      those contacted by a modest relative amount. The value credited is <b>only the lifetime value of the policies that
+      would actually have lapsed</b>, not the average of everyone contacted, so the gain is not inflated by the roughly
+      80% of the targeted group who were never going to leave.</p>
     <ul class="flow" id="roiSteps"></ul>
     <div class="fig-2">
       <figure class="fig">
@@ -566,17 +568,17 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
           11% (break-even, at the base ¥7,500 cost per policyholder). Green is positive, red is a loss.</figcaption>
       </figure>
     </div>
-    <p>The honest reading is that this programme is worth doing across a wide range of assumptions, but not all of them.
-      Presenting the sensitivity grid rather than a single ROI figure is the difference between a number a committee can
-      challenge and one it has to take on faith.</p>
+    <p>The honest reading is that this programme is <b>worth doing across a wide range of assumptions, but not all of
+      them</b>. Presenting the sensitivity grid rather than a single ROI figure is the difference between a number a
+      committee can challenge and one it has to take on faith.</p>
   </section>
 
   <!-- 6. FAIRNESS ----------------------------------------------------------->
   <section class="sec">
     <h2><span class="n">6</span>Does the targeting treat groups fairly?</h2>
     <p class="sec-meta">Selection rate and accuracy by age and income</p>
-    <p>A retention flag decides who gets attention and who is left alone, so it is worth checking whether it behaves
-      evenly across groups before anyone acts on it. I broke the flag down by age band and household income, comparing
+    <p>A retention flag decides who gets attention and who is left alone, so it is worth checking <b>whether it behaves
+      evenly across groups</b> before anyone acts on it. I broke the flag down by age band and household income, comparing
       the actual lapse rate, the rate at which each group is flagged, and the model's accuracy within the group.</p>
     <figure class="fig">
       <div class="cap-h">By age band</div>
@@ -598,9 +600,9 @@ figure.fig figcaption { font-size: .85rem; color: var(--muted); line-height: 1.5
     <h2><span class="n">7</span>How it would actually ship</h2>
     <p class="sec-meta">Proposed production architecture, not yet built</p>
     <p>Everything above runs on my laptop. Making it useful inside MetLife means putting it on a cadence and into the
-      hands of the people who talk to customers. I want to be clear about the line between what is built here and what is
-      a proposal: the SHAP explanations and the fairness audit above are implemented; the Azure and MLOps plumbing below
-      is how I would productionise it, not something I have stood up.</p>
+      hands of the people who talk to customers. I want to be clear about <b>the line between what is built here and what
+      is a proposal</b>: the SHAP explanations and the fairness audit above are <b>implemented</b>; the Azure and MLOps
+      plumbing below is how I would productionise it, <b>not something I have stood up</b>.</p>
     <div class="fig-2">
       <figure class="fig">
         <div class="cap-h">Pipeline (proposed)</div>
